@@ -75,9 +75,10 @@ class BERTSentimentAnalyzer(nn.Module):
 
         # Display results
         class_names = ['부정', '중립', '긍정']
-        print(f"Predicted Class: {class_names[predicted_class]}")
+        #print(f"Predicted Class: {class_names[predicted_class]}")
 
         for i, class_name in enumerate(class_names):
             class_prob = probabilities[0][i].item()
-            print(f"{class_name} Probability: {class_prob:.4f}")
+            #print(f"{class_name} Probability: {class_prob:.4f}")
 
+        return class_names[predicted_class]

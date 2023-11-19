@@ -1,9 +1,22 @@
 from rds_mysql import RDSConnector
-from sentiment_analysis import BERTSentimentAnalyzer
 import os
+from sentiment_analysis import BERTSentimentAnalyzer
 from dotenv import load_dotenv
 from preprocessing import preprocess_text
 
+def test(text, positive_reviews, negative_reviews):
+    preprocessd_text = preprocess_text(text)
+    preprocessd_texts = [sentence.text for sentence in preprocessd_text]
+
+    for processed_text in preprocessd_texts:
+        sentiment = sentiment_analyzer.perform_sentiment_analysis(processed_text)
+        if sentiment == '긍정':
+            positive_reviews += processed_text
+        elif sentiment == '부정':
+            negative_reviews += processed_text
+    return positive_reviews, negative_reviews
+            
+    
 if __name__ == "__main__":
     load_dotenv()
     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
@@ -21,24 +34,26 @@ if __name__ == "__main__":
     connection = rds_connector.connect_to_mysql()
 
     # Execute SQL query
-    sql_query = 'select * from ProductReviews;'
+    sql_query = 'select * from ProductReviews LIMIT 9;'
     result = rds_connector.execute_query(connection, sql_query)
 
-    review_texts = ""
+    sentiment_analyzer = BERTSentimentAnalyzer()
+
+    positive_reviews = ""
+    negative_reviews = ""
     for row in result:
         if isinstance(row, tuple):
             product_id = row[1]
             positive_text = row[3]
-            review_texts += positive_text
             negative_text = row[4]
-            review_texts += negative_text
+            positive_reviews, negative_reviews = test(positive_text + negative_text, positive_reviews, negative_reviews)
 
-    print(preprocess_text(review_texts))
+    print("positive : ", positive_reviews)
+    print("negative : ", negative_reviews)
 
     # Close connection
     rds_connector.close_connection(connection)
 
-    # sentiment_analyzer = BERTSentimentAnalyzer()
 
     # sentence = "세 정 감 이 나 쁘 지 아나요"
     # sentiment_analyzer.perform_sentiment_analysis(sentence)
