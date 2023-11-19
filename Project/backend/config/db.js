@@ -1,8 +1,11 @@
 const mysql = require('mysql2');
+require('dotenv').config({ path: '.../.env' });
+
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    host: process.env.RDS_HOST, // RDS 엔드포인트
+    user: process.env.USER_NAME, // RDS 사용자명
+    password: process.env.USER_PASSWORD, // RDS 비밀번호
     database: process.env.DB_DATABASE
 });
+
 module.exports = db;

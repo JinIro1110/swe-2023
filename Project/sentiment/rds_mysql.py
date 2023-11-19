@@ -1,5 +1,7 @@
 import boto3
 import pymysql
+import os
+from dotenv import load_dotenv
 
 class RDSConnector:
     def __init__(self, aws_access_key_id, aws_secret_access_key, region_name, db_instance_identifier, database_name):
@@ -9,6 +11,7 @@ class RDSConnector:
         self.db_instance_identifier = db_instance_identifier
         self.database_name = database_name
 
+        load_dotenv()
         # AWS RDS 클라이언트 생성
         self.rds_client = boto3.client('rds', aws_access_key_id=self.aws_access_key_id, aws_secret_access_key=self.aws_secret_access_key, region_name=self.region_name)
 
@@ -21,7 +24,7 @@ class RDSConnector:
     def connect_to_mysql(self):
         # MySQL 연결 설정
         endpoint = self.get_rds_endpoint()
-        conn = pymysql.connect(host=endpoint, user='yknam', password='', database=self.database_name, port=3306)
+        conn = pymysql.connect(host=endpoint, user=os.getenv('USER_NAME'), password=os.getenv('USER_PASSWORD'), database=self.database_name, port=3306)
         return conn
 
     def execute_query(self, conn, sql_query):
