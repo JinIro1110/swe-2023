@@ -1,0 +1,25 @@
+간식: https://www.flaticon.com/kr/free-icon/juice_5895507?term=%EA%B0%84%EC%8B%9D&page=1&position=12&origin=search&related_id=5895507
+스킨케어: https://www.flaticon.com/kr/free-icon/body-lotion_5362205?term=%EB%A1%9C%EC%85%98&page=1&position=18&origin=search&related_id=5362205
+물티슈: https://www.flaticon.com/kr/free-icon/wet-wipes_3035153?term=%EB%AC%BC%ED%8B%B0%EC%8A%88&page=1&position=7&origin=search&related_id=3035153
+세정제: https://www.flaticon.com/kr/free-icon/detergent_7040400?related_id=7040400
+바스&클렌징: https://www.flaticon.com/kr/free-icon/bathtub_12321151?related_id=12321151
+기저귀: https://www.flaticon.com/kr/free-icon/baby-diaper_7107808?term=%EA%B8%B0%EC%A0%80%EA%B7%80&page=1&position=8&origin=search&related_id=7107808
+홈: https://www.flaticon.com/kr/free-icon/house-black-silhouette-without-door_20176?term=%EC%A7%91&page=1&position=5&origin=search&related_id=20176
+가이드: https://www.flaticon.com/kr/free-icon/open-book_1159963?term=%EC%B1%85&related_id=1159963
+베럽몰: https://www.flaticon.com/kr/free-icon/store_726569?term=%EC%83%81%EC%A0%90&page=1&position=11&origin=tag&related_id=726569
+찜1: https://www.flaticon.com/kr/free-icon/heart_1077086?term=%ED%95%98%ED%8A%B8&related_id=1077086
+마이베럽: https://www.flaticon.com/kr/free-icon/profile_3106921?term=%ED%94%84%EB%A1%9C%ED%95%84&page=1&position=3&origin=search&related_id=3106921
+
+
+찜2: https://www.flaticon.com/kr/free-icon/heart_1077035?term=%ED%95%98%ED%8A%B8&page=1&position=4&origin=search&related_id=1077035
+
+
+스킨케어1: https://www.flaticon.com/free-sticker/moisturizer_8685988?term=skincare&page=1&position=1&origin=search&related_id=8685988
+스킨케어2: https://www.flaticon.com/free-sticker/cosmetic_8716695?term=skincare&page=1&position=2&origin=search&related_id=8716695
+스킨케어3: https://www.flaticon.com/free-sticker/serum_8685997?term=skincare&page=1&position=3&origin=search&related_id=8685997
+스킨케어4: https://www.flaticon.com/free-sticker/skincare_7750660?term=skincare&page=1&position=7&origin=search&related_id=7750660
+스킨케어5: https://www.flaticon.com/free-sticker/skincare_11478816?term=skincare&page=1&position=23&origin=search&related_id=11478816
+스킨케어6: https://www.flaticon.com/free-sticker/lotion_8686129?term=skincare&page=1&position=64&origin=search&related_id=8686129
+
+공유: https://www.flaticon.com/free-icon/share_1358023?term=share&page=1&position=2&origin=search&related_id=1358023
+별: https://www.flaticon.com/free-icon-font/star_3916582?page=1&position=1&term=star&origin=search&related_id=3916582
