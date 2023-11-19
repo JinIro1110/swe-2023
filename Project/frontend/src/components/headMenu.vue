@@ -4,7 +4,7 @@
             <div class="col d-flex justify-content-start" @click="goBack">
                 <img src="../assets/icons/backward.png" class="iconWidth">
             </div>
-            <div class="col d-flex justify-content-center" style="font-size: 17px; font-weight: lighter;">
+            <div class="col d-flex justify-content-center" style="font-size: 18px; font-weight: lighter;">
                 {{ menu }}
             </div>
             <div class="col d-flex justify-content-end me-3">
@@ -37,7 +37,6 @@ export default {
 <style scoped>
 .container-fluid {
     padding: 0px;
-    max-height: 50px;
 }
 
 .row {

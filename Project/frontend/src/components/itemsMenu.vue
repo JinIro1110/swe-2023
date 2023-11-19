@@ -2,7 +2,7 @@
     <headMenu :menu="bigCategory" />
     <div class="content container-fluid p-3">
         <div class="row">
-            <div v-for="item in items" :key="item.id" class="col-6 mb-5">
+            <div v-for="item in items" :key="item.id" class="col-6 mb-3">
                 <div class="lists text-center" @click="clickItem(item.id)">
                     <img :src="require(`@/assets/photos/${item.image}`)">
                     <div class="description">
@@ -63,7 +63,7 @@ export default {
     overflow-x: hidden;
     text-align: start;
     margin-top: 40px;
-    margin-bottom:
+    height: 100%;
 }
 
 .freeShipping {

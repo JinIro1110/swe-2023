@@ -15,22 +15,25 @@ import cloud from 'd3-cloud';
 
 export default {
     name: 'WordCloud',
+    data() {
+        return {
+            items: {
+                pros: [
+                    ['pros1', 0.6],
+                    ['pros2', 0.5],
+                    ['pros3', 0.4],
+                ],
+                cons: [
+                    ['cons1', 0.6],
+                    ['cons2', 0.5],
+                    ['cons3', 0.4],
+                ]
+            }
+        };
+    },
     mounted() {
-        this.createWordCloud('#word-cloud-1', [
-            { text: 'Hello', size: 20 },
-            { text: 'Vue', size: 20 },
-            { text: 'Hello', size: 20 },
-            { text: 'Vue', size: 20 },
-            { text: 'Hello', size: 20 },
-            { text: 'Vue', size: 20 },
-            { text: 'Hello', size: 40 },
-            { text: 'Vue', size: 50 },
-        ]);
-        this.createWordCloud('#word-cloud-2', [
-            { text: 'World', size: 30 },
-            { text: 'JavaScript', size: 60 },
-            // 추가 단어들...
-        ]);
+        this.createWordCloud('#word-cloud-1', this.items.pros.map(item => ({ text: item[0], size: item[1] * 70 })));
+        this.createWordCloud('#word-cloud-2', this.items.cons.map(item => ({ text: item[0], size: item[1] * 70 })));
     },
     methods: {
         createWordCloud(containerId, words) {
@@ -42,7 +45,6 @@ export default {
                 .font("Impact")
                 .fontSize(d => d.size)
                 .on("end", words => this.draw(containerId, words));
-
             layout.start();
         },
         draw(containerId, words) {
@@ -57,7 +59,7 @@ export default {
                 .enter().append("text")
                 .style("font-size", d => d.size + "px")
                 .style("font-family", "Impact")
-                .style("fill", containerId === '#word-cloud-1' ? 'DodgerBlue' : 'Red') 
+                .style("fill", containerId === '#word-cloud-1' ? 'DodgerBlue' : 'Red')
                 .attr("text-anchor", "middle")
                 .attr("transform", d => `translate(${[d.x, d.y]})`)
                 .text(d => d.text)

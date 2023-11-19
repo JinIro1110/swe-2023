@@ -224,8 +224,8 @@ export default {
 }
 
 .nav-link.active {
-    color: rgb(100, 206, 145);
-    border-bottom: 3px solid rgb(100, 206, 145);
+    color: #5BF52F;
+    border-bottom: 3px solid #5BF52F;
     background-color: transparent;
 }
 
