@@ -2,7 +2,7 @@
     <div class="main p-3">
         <div class="photo d-flex align-items-center">
             <span style="font-size:25px; font-weight: bold; margin-right:5px;">{{ rating }}</span>
-            <svg v-for="i in 5" :key="i" width="24" height="24" viewBox="0 0 24 24">
+            <svg v-for="i in 5" :key="i" width="22" height="22" viewBox="0 0 30 30">
                 <defs>
                     <clipPath :id="'clip-star-' + i">
                         <rect :width="getStarWidth(i)" height="24" />
@@ -152,7 +152,8 @@
         id similique illum sed et aperiam in est perspiciatis, laboriosam voluptas. Porro assumenda provident nobis
         repudiandae.
     </div>
-</div></template>
+</div>
+</template>
 
 <script>
 import WordCloud from './WordCloud.vue';
@@ -187,7 +188,7 @@ export default {
 .rounded-circle {
     width: 50px;
     position: fixed;
-    bottom: 70px;
+    bottom: 60px;
     right: 30px;
 }
 </style>

@@ -31,7 +31,7 @@
 }
 
 .btn {
-    background-color: rgb(39, 202, 151);
+    background-color: #5BF52F;
     color: white;
 }
 </style>
