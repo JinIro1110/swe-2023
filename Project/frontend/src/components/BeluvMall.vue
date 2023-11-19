@@ -124,7 +124,7 @@ export default {
     font-family: 'Beluv';
     font-size: 30px;
     font-weight: bold;
-    color: rgb(100, 206, 145)
+    color: rgb(100, 206, 145);
 }
 
 .topBar {

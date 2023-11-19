@@ -2,13 +2,11 @@
     <div class="purchaseItem container-fluid text-center">
         <div class="row justify-content-center">
             <div class="col-auto">
-                <!-- mx-2는 좌우 마진을 2단위로 조절함 -->
                 <button
                     style="background-color: white; outline: none; border: 1px solid gray; border-radius: 10%; padding: 7px; height: 40px; line-height: 1.5; font-size: 16px; margin-right: -10px;"><img
                         src="../assets/icons/heart2.png" alt="" width="22"></button>
             </div>
             <div class="col-auto">
-                <!-- 같은 높이와 글꼴 크기를 적용하여 높이 일치 -->
                 <button type="button" class="btn"
                     style="width: 320px; height: 40px; line-height: 1.5; font-size: 16px;">구매하기</button>
             </div>

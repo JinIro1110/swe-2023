@@ -2,9 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BeluvMall from '../components/BeluvMall'
 import itemsMenu from '../components/itemsMenu'
 import itemDescription from '../components/itemDescription'
-import review from '../components/review'
+import review from '../components/reviewPage'
 import wordCloud from '../components/WordCloud'
-
+import writeReview from '../components/writeReview'
 
 const routes = [
     {
@@ -31,8 +31,12 @@ const routes = [
         path: '/wordcloud',
         name: 'wordcloud',
         component: wordCloud
+    },
+    {
+        path: '/writeReview',
+        name: 'writeReview',
+        component: writeReview
     }
-
 ]
 
 const router = createRouter({

@@ -37,6 +37,7 @@ export default {
 <style scoped>
 .container-fluid {
     padding: 0px;
+    max-height: 50px;
 }
 
 .row {

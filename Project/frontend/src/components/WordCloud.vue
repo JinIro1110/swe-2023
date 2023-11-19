@@ -1,7 +1,11 @@
 <template>
     <div class="word-cloud-container">
-        <div id="word-cloud-1"></div>
-        <div id="word-cloud-2"></div>
+        <div id="word-cloud-1">
+            <div class="fs-1 fw-bold">장점</div>
+        </div>
+        <div id="word-cloud-2">
+            <div class="fs-1 fw-bold">단점</div>
+        </div>
     </div>
 </template>
 
@@ -53,9 +57,11 @@ export default {
                 .enter().append("text")
                 .style("font-size", d => d.size + "px")
                 .style("font-family", "Impact")
+                .style("fill", containerId === '#word-cloud-1' ? 'DodgerBlue' : 'Red') 
                 .attr("text-anchor", "middle")
                 .attr("transform", d => `translate(${[d.x, d.y]})`)
-                .text(d => d.text);
+                .text(d => d.text)
+                .style("border", "1px solid black");
         }
     }
 };
@@ -66,9 +72,5 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-#word-cloud-1 svg, #word-cloud-2 svg {
-    border: 1px solid black; /* 테두리 설정 */
 }
 </style>

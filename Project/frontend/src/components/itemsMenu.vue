@@ -62,6 +62,8 @@ export default {
     width: 100%;
     overflow-x: hidden;
     text-align: start;
+    margin-top: 40px;
+    margin-bottom:
 }
 
 .freeShipping {
