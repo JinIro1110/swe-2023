@@ -34,6 +34,7 @@ export default {
         return {
             bigCategory: '',
             items: [],
+            subCateogory: ['a','b','c','d']
         };
     },
     created() {
