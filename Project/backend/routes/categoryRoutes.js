@@ -5,3 +5,5 @@ const categoryController = require('../controllers/categoryController')
 router.get('/subCategoryNavBar', categoryController.subCategoryNavBar);
 router.get('/showEntireItem', categoryController.showEntireItem);
 router.get('/showSubCategoryItem', categoryController.showSubCategoryItem);
+
+module.exports = router;

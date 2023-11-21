@@ -4,3 +4,5 @@ const reviewController = require('../controllers/reviewController')
 
 router.get('/getReviews', reviewController.getReviews);
 router.get('/getProsCons', reviewController.getProsCons);
+
+module.exports = router;

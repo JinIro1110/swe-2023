@@ -2,20 +2,21 @@ const db = require('../config/db');
 
 // 서브 카테고리 네비바 생성
 exports.subCategoryNavBar = (req, res) => {
+    console.log(req.params.mainCategory);
+    const mainCategoryName = req.params.mainCategory;
     const query = `
     SELECT SubCategoryName
     FROM SubCategory
     INNER JOIN MainCategory ON MainCategory.CategoryID = SubCategory.CategoryID
-    WHERE MainCategory.CategoryName = '간식'
+    WHERE MainCategory.CategoryName = ?
     `;
 
-    db.query(query, (err, results) => {
+    db.query(query, [mainCategoryName], (err, results) => {
         if (err) {
             console.error('Error fetching subcategories:', err);
             res.status(500).json({ error: 'Error fetching subcategories' });
             return;
         }
-
         // 결과를 클라이언트에 전달
         res.json({ subcategories: results });
     });
@@ -23,6 +24,7 @@ exports.subCategoryNavBar = (req, res) => {
 
 // 아이템 진열(카테고리 전체 클릭시 전체 아이템)
 exports.showEntireItem = (req, res) => {
+    const categoryName = '간식'
     const query = `
     SELECT distinct *
     FROM MainCategory
@@ -31,7 +33,7 @@ exports.showEntireItem = (req, res) => {
     WHERE MainCategory.CategoryName = ?
     `;
 
-    connection.query(query, [categoryName], (err, results) => {
+    db.query(query, [categoryName], (err, results) => {
         if (err) {
             console.error('Error fetching data:', err);
             res.status(500).json({ error: 'Error fetching data' });
@@ -44,7 +46,7 @@ exports.showEntireItem = (req, res) => {
 
 // 네비바 클릭시 소 카테고리 아이템 보여주기
 exports.showSubCategoryItem = (req, res) => {
-    const subcategoryName = req.params.subcategoryName;
+    const subcategoryName = '음료';
 
     const query = `
     SELECT *
