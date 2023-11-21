@@ -3,37 +3,37 @@ const store = new createStore({
     state() {
         return {
             menu: null,
-            bigCategory: null,
-            smallCategory: null,
-            item: null
+            mainCategory: null,
+            subCategory: null,
+            itemId: null
         };
     },
     mutations: {
         setMenu(state, menu) {
             state.menu = menu;
         },
-        setBigCategory(state, bigCategory) {
-            state.bigCategory = bigCategory;
+        setMainCategory(state, mainCategory) {
+            state.mainCategory = mainCategory;
         },
-        setSmallCategory(state, smallCategory) {
-            state.smallCategory = smallCategory;
+        setSubCategory(state, subCategory) {
+            state.subCategory = subCategory;
         },
-        setItem(state, item) {
-            state.item = item;
+        setItemId(state, itemId) {
+            state.itemId = itemId;
         }
     },
     actions: {
         updateMenu({ commit }, menu) {
             commit('setMenu', menu);
         },
-        moveBigCategory({ commit }, bigCategory) {
-            commit('setBigCategory', bigCategory);
+        moveMainCategory({ commit }, mainCategory) {
+            commit('setMainCategory', mainCategory);
         },
-        moveSmallCategory({ commit }, smallCategory) {
-            commit('setSmallCategory', smallCategory);
+        moveSubCategory({ commit }, subCategory) {
+            commit('setSubCategory', subCategory);
         },
-        loadItem({ commit }, item) {
-            commit('setItem', item);
+        loadItemId({ commit }, itemId) {
+            commit('setItemId', itemId);
         }
     }
 });

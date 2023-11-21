@@ -44,24 +44,33 @@
         </div>
     </div>
     <div class="reviewInput container-fluid">
-        <div class="row d-flex jusfify-content-between p-4">
+        <div class="row d-flex jusfify-content-between p-3">
             <div class="col fw-bold">
                 제품에 대해 알려주세요
             </div>
             <div class="strLen col text-end">
-                <span>{{ stringLen }}</span>
+                <span v-if="stringLength > 30" style="color: #5BF52F;">{{ stringLength }}</span>
+                <span v-else>{{ stringLength }}</span>
                 <span> / 30자 이상</span>
             </div>
         </div>
-        <div class="row">
-            <div>
-                <img :src="require(`@/assets/icons/good.png`)"><span>칭찬할점</span>
+        <div class="row text-start p-4">
+            <div class="inputLabel d-flex align-items-center mb-1">
+                <img class="thumb me-1 mb-2" :src="require(`@/assets/icons/good.png`)"><span class="fw-bold">칭찬할 점</span>
             </div>
             <div class="inputBox">  
-                input
+                <textarea v-model="pros" class="inputText" :placeholder="prosPlaceHolder"/>
+            </div>
+            <div class="inputLabel d-flex align-items-center mb-1 mt-4">
+                <img class="thumb me-1 mb-1" :src="require(`@/assets/icons/bad.png`)"><span class="fw-bold">아쉬운 점</span>
+            </div>
+            <div class="inputBox">  
+                <textarea v-model="cons" class="inputText" :placeholder="consPlaceHolder"/>
             </div>
         </div>
     </div>
+    <button class="submitButton" v-if="stringLength > 30 && this.selectedRating !== 0">{{ stringLength }}</button>
+    <button class="justsubmitButton" v-else>등록하기</button>
 </template>
 
 <script>
@@ -81,6 +90,10 @@ export default {
             },
             selectedMessage: '-',
             stringLen: 0,
+            pros: '',
+            cons: '',
+            prosPlaceHolder: `제형 / 사용감 / 트러블 유무 / 향 / 가성비 등\n칭찬할 점에 대해 자유롭게 작성해주세요 :)`,
+            consPlaceHolder: `제형 / 사용감 / 트러블 유무 / 향 / 가성비 등\n아쉬운 점에 대해 자유롭게 작성해주세요 :)`
         };
     },
     methods: {
@@ -97,6 +110,11 @@ export default {
             this.$router.go(-1);
         },
     },
+    computed: {
+        stringLength() {
+            return this.pros.length + this.cons.length;
+        }
+    }
 };
 </script>
 
@@ -129,5 +147,40 @@ export default {
 .strLen {
     font-size: 14px;
     color: gray;
+}
+
+.inputLabel {
+    display: f
+}
+.thumb {
+    width: 25px;
+}
+
+.inputText {
+    width: 100%;
+    height: 160px;
+    border-radius: 10px;
+    border: 1px #ccc solid;
+    padding: 10px;
+}
+
+.justsubmitButton {
+    width: 100%;
+    color: white;
+    background-color: #ccc;
+    border: 0;
+    height: 40px;
+}
+
+.submitButton {
+    width: 100%;
+    color: white;
+    background-color: #5BF52F;
+    border: 0;
+    height: 40px;
+}
+
+.submitButton:active {
+    background-color: green;
 }
 </style>
