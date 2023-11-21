@@ -2,7 +2,6 @@ const db = require('../config/db');
 
 // 서브 카테고리 네비바 생성
 exports.subCategoryNavBar = (req, res) => {
-    console.log(req.params.mainCategory);
     const mainCategoryName = req.params.mainCategory;
     const query = `
     SELECT SubCategoryName
@@ -24,7 +23,7 @@ exports.subCategoryNavBar = (req, res) => {
 
 // 아이템 진열(카테고리 전체 클릭시 전체 아이템)
 exports.showEntireItem = (req, res) => {
-    const categoryName = '간식'
+    const categoryName = decodeURIComponent(req.params.mainCategory);
     const query = `
     SELECT distinct *
     FROM MainCategory
@@ -39,8 +38,7 @@ exports.showEntireItem = (req, res) => {
             res.status(500).json({ error: 'Error fetching data' });
             return;
         }
-
-        res.json({ mainCategoryItemData: results });
+        res.json({ mainCategoryItems: results });
     });
 };
 
