@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // 아이템 클릭 시 아이템들에 대한 정보 가져오기
 exports.getProductInfo = (req, res) => {
-    const productId = req.params.productId;
+    const productId = 8;
 
     const query = `
     SELECT *

@@ -101,7 +101,7 @@ export default {
             this.selectedItemIndex = index;
         },
         clickCategory(category) {
-            this.$store.dispatch('moveBigCategory', category);
+            this.$store.dispatch('moveMainCategory', category);
             this.$router.push({
                 name: "itemsMenu",
             });

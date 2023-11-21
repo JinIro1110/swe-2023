@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // 제품 리뷰 가져오기
 exports.getReviews = (req, res) => {
-    const productID = req.params.productID;
+    const productID = 3;
 
     const query = `
     SELECT *

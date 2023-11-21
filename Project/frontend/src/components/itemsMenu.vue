@@ -1,5 +1,5 @@
 <template>
-    <headMenu :menu="bigCategory" />
+    <headMenu :menu="mainCategory" />
     <div class="content container-fluid p-3">
         <div class="row">
             <div v-for="item in items" :key="item.id" class="col-6 mb-3">
@@ -24,25 +24,39 @@
 </template>
 
 <script scoped>
-import headMenu from './headMenu.vue'
-import { skincares } from '@/assets/items/skincare'
+import headMenu from './headMenu.vue';
+import { skincares } from '@/assets/items/skincare';
+import axios from 'axios';
 export default {
     components: {
         headMenu,
     },
     data() {
         return {
-            bigCategory: '',
+            mainCategory: '',
             items: [],
-            subCateogory: ['a','b','c','d']
+            subCateogory: ['a', 'b', 'c', 'd']
         };
     },
     created() {
         this.items = skincares;
-        this.bigCategory = this.$store.state.bigCategory;
+        this.mainCategory = this.$store.state.mainCategory;
+        console.log(this.mainCategory);
+
+        const Url = `http://localhost:3000/api/category/subCategoryNavBar/mainCategory='${this.mainCategory}'`;
+
+        axios.get(Url)
+            .then((response) => {
+                // API 응답에서 서브 카테고리 목록을 가져와 데이터에 할당
+                this.subcategories = response.data.subcategories;
+            })
+            .catch((error) => {
+                console.error('API 요청 중 오류 발생:', error);
+            });
     },
-    methods : {
-        changeNum: function(value) {
+
+    methods: {
+        changeNum: function (value) {
             if (typeof value !== 'string') {
                 value = value.toString();
             }
@@ -74,9 +88,13 @@ export default {
     border-radius: 20%;
     color: gray;
 }
-.brand, .name, .info {
+
+.brand,
+.name,
+.info {
     text-align: start;
 }
+
 .brand {
     color: rgb(150, 150, 150);
 }
@@ -93,9 +111,9 @@ export default {
     font-weight: bold;
     margin-right: 3px;
 }
+
 .price {
     text-decoration: line-through;
     color: rgb(150, 150, 150);
     font-size: 12px;
-}
-</style>
+}</style>
