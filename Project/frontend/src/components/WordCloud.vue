@@ -1,5 +1,5 @@
 <template>
-    <div class="word-cloud-container">
+    <div class="word-cloud-container d-flex align-items-between">
         <div id="word-cloud-1">
             <div class="fs-1 fw-bold">장점</div>
         </div>
@@ -49,8 +49,8 @@ export default {
         },
         draw(containerId, words) {
             const svg = d3.select(containerId).append("svg")
-                .attr("width", 200)
-                .attr("height", 200)
+                .attr("width", '100%')
+                .attr("height", 250)
                 .append("g")
                 .attr("transform", "translate(100,100)");
 
@@ -72,7 +72,9 @@ export default {
 <style scoped>
 .word-cloud-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+    width: 100%;
 }
+
 </style>

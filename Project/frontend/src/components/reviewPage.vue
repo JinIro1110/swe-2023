@@ -5,27 +5,86 @@
                 <img src="../assets/icons/backward.png" class="iconWidth">
             </div>
             <div class="col d-flex justify-content-center" style="font-size: 17px; font-weight: lighter;">
-                리뷰count개
+                리뷰 {{ reviewCount }}개
             </div>
             <div class="col">
             </div>
         </div>
     </div>
-    <ReviewTemplate/>
+    <div class="main p-3">
+        <div class="photo d-flex align-items-center">
+            <span style="font-size:25px; font-weight: bold; margin-right:5px;">{{ rating }}</span>
+            <svg v-for="i in 5" :key="i" width="22" height="22" viewBox="0 0 30 30">
+                <path :fill="i <= rating ? 'gold' : '#ccc'"
+                    d="M23.836,8.794a3.179,3.179,0,0,0-3.067-2.226H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832L4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6A3.177,3.177,0,0,0,23.836,8.794Z" />
+            </svg>
+        </div>
+        <img src="../assets/icons/review.png" class="rounded-circle" @click="goWriteReview">
+        <div class="wordCloud mt-5">
+            <WordCloud />
+        </div>
+        <div class="reviews">
+            <div class="review" v-for="review in reviews" :key="review.ReviewID">
+                <div class="p-3">
+                    {{ review.Rating }}
+                </div>
+                <div class="p-3">
+                    {{ review.PositiveReviewText }}
+                </div>
+                <div class="p-3">
+                    {{ review.NegativeReviewText }}
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-import ReviewTemplate from './reviewTemplate.vue';
+import WordCloud from './WordCloud.vue';
+import axios from 'axios';
 export default {
     name: "reviewPage",
     data() {
+        return {
+            itemId: this.$store.state.itemId,
+            rating: 0,
+            review: {},
+            reviews: [],
+            reviewCount: 0,
+            ProsCons: [],
+        };
+    },
+    mounted() {
+        const getProductRating = `http://localhost:3000/api/item/getProductRating/${this.itemId}`;
+        axios.get(getProductRating)
+            .then((response) => {
+                this.rating = response.data.rating;
+            })
+            .catch((error) => {
+                console.error('API 요청 중 오류 발생:', error);
+            });
+
+        const getReviews = `http://localhost:3000/api/review/getReviewInfo/${this.itemId}`;
+        axios.get(getReviews)
+            .then((response) => {
+                this.review = response.data.reviewInfo;
+                this.reviews = this.review.productReviews;
+                this.reviewCount = this.review.reviewCount;
+                this.ProsCons = this.review.productProsCons;
+            })
+            .catch((error) => {
+                console.error('API 요청 중 오류 발생:', error);
+            });
     },
     methods: {
         goBack() {
             this.$router.go(-1);
         },
+        goWriteReview() {
+            this.$router.push("/writeReview")
+        }
     },
-    components: { ReviewTemplate }
+    components: { WordCloud }
 }
 </script>
 
@@ -49,5 +108,11 @@ export default {
 
 .main {
     margin-top: 40px;
+}
+.rounded-circle {
+    width: 50px;
+    position: fixed;
+    bottom: 60px;
+    right: 30px;
 }
 </style>

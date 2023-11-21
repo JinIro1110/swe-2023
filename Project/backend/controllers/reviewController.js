@@ -1,43 +1,64 @@
 const db = require('../config/db');
 
-// 제품 리뷰 가져오기
-exports.getReviews = (req, res) => {
-    const productID = 3;
+exports.getReviewInfo = (req, res) => {
+    const productId = req.params.itemId;
 
-    const query = `
-    SELECT *
-    FROM ProductReviews
-    WHERE ProductID = ?
+    // 리뷰 정보 가져오기
+    const getReviewsQuery = `
+        SELECT ReviewID, PositiveReviewText, NegativeReviewText, Rating
+        FROM ProductReviews
+        WHERE ProductID = ?
     `;
 
-    db.query(query, [productID], (err, results) => {
+    // 장단점 정보 가져오기
+    const getProsConsQuery = `
+        SELECT PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating
+        FROM ProductKeywords
+        WHERE ProductID = ?
+    `;
+
+    // 리뷰 개수 가져오기
+    const getReviewCountQuery = `
+        SELECT COUNT(*) AS ReviewCount
+        FROM ProductReviews
+        WHERE ProductID = ?
+    `;
+
+    // 여러 쿼리를 병렬로 실행
+    db.query(getReviewsQuery, [productId], (err, reviewsResults) => {
         if (err) {
             console.error('Error fetching product reviews:', err);
             res.status(500).json({ error: 'Error fetching product reviews' });
             return;
         }
 
-        res.json({ productReviews: results });
-    });
-};
+        db.query(getProsConsQuery, [productId], (err, prosConsResults) => {
+            if (err) {
+                console.error('Error fetching product advantages and disadvantages:', err);
+                res.status(500).json({ error: 'Error fetching product advantages and disadvantages' });
+                return;
+            }
 
-// 제품 장점, 단점 가져오기
-exports.getProsCons = (req, res) => {
-    const productID = req.params.productID;
+            db.query(getReviewCountQuery, [productId], (err, reviewCountResults) => {
+                if (err) {
+                    console.error('Error fetching product review count:', err);
+                    res.status(500).json({ error: 'Error fetching product review count' });
+                    return;
+                }
 
-    const query = `
-    SELECT PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating
-    FROM ProductKeywords
-    WHERE ProductID = ?
-    `;
+                if (reviewsResults.length === 0) {
+                    res.status(404).json({ error: 'No reviews found for the product' });
+                    return;
+                }
 
-    db.query(query, [productID], (err, results) => {
-        if (err) {
-            console.error('Error fetching product advantages and disadvantages:', err);
-            res.status(500).json({ error: 'Error fetching product advantages and disadvantages' });
-            return;
-        }
+                const reviewInfo = {
+                    productReviews: reviewsResults,
+                    productProsCons: prosConsResults,
+                    reviewCount: reviewCountResults[0].ReviewCount,
+                };
 
-        res.json({ productKeywords: results });
+                res.json({ reviewInfo });
+            });
+        });
     });
 };
