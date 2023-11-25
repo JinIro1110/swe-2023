@@ -82,3 +82,5 @@ class BERTSentimentAnalyzer(nn.Module):
             #print(f"{class_name} Probability: {class_prob:.4f}")
 
         return class_names[predicted_class]
+    
+    
