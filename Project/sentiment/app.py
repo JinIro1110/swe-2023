@@ -11,9 +11,9 @@ def test(text, positive_reviews, negative_reviews):
     for processed_text in preprocessd_texts:
         sentiment = sentiment_analyzer.perform_sentiment_analysis(processed_text)
         if sentiment == '긍정':
-            positive_reviews += processed_text
+            positive_reviews += (processed_text + "\n")
         elif sentiment == '부정':
-            negative_reviews += processed_text
+            negative_reviews += (processed_text + "\n")
     return positive_reviews, negative_reviews
             
     
@@ -34,13 +34,14 @@ if __name__ == "__main__":
     connection = rds_connector.connect_to_mysql()
 
     # Execute SQL query
-    sql_query = 'select * from ProductReviews LIMIT 9;'
+    sql_query = 'select * from ProductReviews LIMIT 10;'
     result = rds_connector.execute_query(connection, sql_query)
 
     sentiment_analyzer = BERTSentimentAnalyzer()
 
     positive_reviews = ""
     negative_reviews = ""
+
     for row in result:
         if isinstance(row, tuple):
             product_id = row[1]
@@ -49,11 +50,8 @@ if __name__ == "__main__":
             positive_reviews, negative_reviews = test(positive_text + negative_text, positive_reviews, negative_reviews)
 
     print("positive : ", positive_reviews)
+    print("----------- :", type(positive_reviews))
     print("negative : ", negative_reviews)
+    print("----------- :", type(negative_reviews))
 
-    # Close connection
     rds_connector.close_connection(connection)
-
-
-    # sentence = "세 정 감 이 나 쁘 지 아나요"
-    # sentiment_analyzer.perform_sentiment_analysis(sentence)
