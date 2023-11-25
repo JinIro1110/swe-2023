@@ -35,7 +35,7 @@ const routes = [
     {
         path: '/writeReview',
         name: 'writeReview',
-        component: writeReview
+        component: writeReview,
     }
 ]
 

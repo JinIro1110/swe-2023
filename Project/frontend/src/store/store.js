@@ -5,7 +5,9 @@ const store = new createStore({
             menu: null,
             mainCategory: null,
             subCategory: null,
-            itemId: null
+            itemId: null,
+            prosKeyword: null,
+            consKeyword: null,
         };
     },
     mutations: {
@@ -20,6 +22,12 @@ const store = new createStore({
         },
         setItemId(state, itemId) {
             state.itemId = itemId;
+        },
+        setProsKeyword(state, prosKeyword) {
+            state.prosKeyword = prosKeyword;
+        },
+        setConsKeyword(state, consKeyword) {
+            state.consKeyword = consKeyword;
         }
     },
     actions: {
@@ -34,6 +42,12 @@ const store = new createStore({
         },
         loadItemId({ commit }, itemId) {
             commit('setItemId', itemId);
+        },
+        loadProsKeyword({ commit }, prosKeyword) {
+            commit('setProsKeyword', prosKeyword);
+        },
+        loadConsKeyword({ commit }, consKeyword) {
+            commit('setConsKeyword', consKeyword);
         }
     }
 });

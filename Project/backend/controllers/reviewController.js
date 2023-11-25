@@ -3,61 +3,99 @@ const db = require('../config/db');
 exports.getReviewInfo = (req, res) => {
     const productId = req.params.itemId;
 
-    // 리뷰 정보 가져오기
+    // 리뷰
     const getReviewsQuery = `
-        SELECT ReviewID, PositiveReviewText, NegativeReviewText, Rating
+        SELECT ReviewID, UserID, PositiveReviewText, NegativeReviewText, Rating
         FROM ProductReviews
-        WHERE ProductID = ?
+        WHERE ProductID = ? ORDER BY UserId DESC;
     `;
 
-    // 장단점 정보 가져오기
+    // 장단점
     const getProsConsQuery = `
         SELECT PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating
         FROM ProductKeywords
         WHERE ProductID = ?
     `;
 
-    // 리뷰 개수 가져오기
+    // 리뷰 개수
     const getReviewCountQuery = `
         SELECT COUNT(*) AS ReviewCount
         FROM ProductReviews
         WHERE ProductID = ?
     `;
-
-    // 여러 쿼리를 병렬로 실행
     db.query(getReviewsQuery, [productId], (err, reviewsResults) => {
         if (err) {
             console.error('Error fetching product reviews:', err);
             res.status(500).json({ error: 'Error fetching product reviews' });
             return;
         }
-
         db.query(getProsConsQuery, [productId], (err, prosConsResults) => {
             if (err) {
                 console.error('Error fetching product advantages and disadvantages:', err);
                 res.status(500).json({ error: 'Error fetching product advantages and disadvantages' });
                 return;
             }
-
             db.query(getReviewCountQuery, [productId], (err, reviewCountResults) => {
                 if (err) {
                     console.error('Error fetching product review count:', err);
                     res.status(500).json({ error: 'Error fetching product review count' });
                     return;
                 }
-
                 if (reviewsResults.length === 0) {
                     res.status(404).json({ error: 'No reviews found for the product' });
                     return;
                 }
-
                 const reviewInfo = {
                     productReviews: reviewsResults,
                     productProsCons: prosConsResults,
                     reviewCount: reviewCountResults[0].ReviewCount,
                 };
-
                 res.json({ reviewInfo });
+            });
+        });
+    });
+};
+
+exports.writeReview = (req, res) => {
+    const itemId = req.params.itemId;
+    const userId = req.body.userId;
+    const prosReview = req.body.prosReview;
+    const consReview = req.body.consReview;
+    const rating = req.body.rating;
+
+    const insertReviewQuery = `Insert Into ProductReviews (ProductID, UserID, PositiveReviewText, NegativeReviewText, Rating) values (?, ?, ?, ?, ?)`;
+
+    db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], (err, results) => {
+        if (err) {
+            console.error('Error inserting review:', err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+        res.status(201).json({ message: '리뷰가 성공적으로 등록되었습니다!' });
+    });
+}
+
+exports.getKeyword = (req, res) => {
+    const productId = req.params.itemId;
+
+    const GetProsInfo = `SELECT PositiveKeyWord, PositiveRating FROM ProductKeywords WHERE ProductID = ? ORDER BY PositiveRating DESC`;
+    const GetConsInfo = `SELECT NegativeKeyWord, NegativeRating FROM ProductKeywords WHERE ProductID = ? ORDER BY NegativeRating DESC`;
+
+    db.query(GetProsInfo, [productId], (err, prosResults) => {
+        if (err) {
+            console.error('Error fetching positive keywords:', err);
+            res.status(500).json({ error: 'Error fetching positive keywords' });
+            return;
+        }
+        db.query(GetConsInfo, [productId], (err, consResults) => {
+            if (err) {
+                console.error('Error fetching negative keywords:', err);
+                res.status(500).json({ error: 'Error fetching negative keywords' });
+                return;
+            }
+            res.json({
+                Pros: prosResults,
+                Cons: consResults
             });
         });
     });
