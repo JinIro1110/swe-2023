@@ -44,8 +44,8 @@ exports.showEntireItem = (req, res) => {
 
 // 네비바 클릭시 소 카테고리 아이템 보여주기
 exports.showSubCategoryItem = (req, res) => {
-    const subcategoryName = '음료';
-
+    const subcategoryName = decodeURIComponent(req.params.subCategory);
+    console.log(this.subCategoryName);
     const query = `
     SELECT *
     FROM Product
@@ -60,6 +60,6 @@ exports.showSubCategoryItem = (req, res) => {
             return;
         }
 
-        res.json({ items: results });
+        res.json({ subCategoryItems: results });
     });
 };

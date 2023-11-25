@@ -9,6 +9,7 @@ const reviewRoutes = require('./routes/reviewRoutes')
 const db = require('./config/db')
 
 app.use(cors());
+app.use(express.json());
 app.use('/api/category', categoryRoutes);
 app.use('/api/item', itemRoutes);
 app.use('/api/review', reviewRoutes);

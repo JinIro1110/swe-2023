@@ -1,5 +1,5 @@
 <template>
-    <div class="word-cloud-container d-flex align-items-between">
+    <div class="word-cloud-container">
         <div id="word-cloud-1">
             <div class="fs-1 fw-bold">장점</div>
         </div>
@@ -14,46 +14,46 @@ import * as d3 from 'd3';
 import cloud from 'd3-cloud';
 
 export default {
-    name: 'WordCloud',
-    data() {
-        return {
-            items: {
-                pros: [
-                    ['pros1', 0.6],
-                    ['pros2', 0.5],
-                    ['pros3', 0.4],
-                ],
-                cons: [
-                    ['cons1', 0.6],
-                    ['cons2', 0.5],
-                    ['cons3', 0.4],
-                ]
-            }
-        };
+    props: {
+        items: {
+            type: Object,
+            require: true,
+        }
     },
-    mounted() {
-        this.createWordCloud('#word-cloud-1', this.items.pros.map(item => ({ text: item[0], size: item[1] * 70 })));
-        this.createWordCloud('#word-cloud-2', this.items.cons.map(item => ({ text: item[0], size: item[1] * 70 })));
+    watch: {
+        items: {
+            handler() {
+                this.createWordClouds();
+            },
+            deep: true
+        }
     },
     methods: {
+        createWordClouds() {
+            this.createWordCloud('#word-cloud-1', this.items.map(item => ({ text: item.PositiveKeyword, size: item.PositiveRating * 2 })));
+            this.createWordCloud('#word-cloud-2', this.items.map(item => ({ text: item.NegativeKeyword, size: item.NegativeRating * 2 })));
+        },
         createWordCloud(containerId, words) {
+            const width = window.innerWidth;
+            const height = 400;
             const layout = cloud()
-                .size([200, 200]) // 클라우드 크기를 줄임
+                .size([width, height])
                 .words(words)
-                .padding(10) // 겹침 방지를 위해 패딩 증가
-                .rotate(() => 0) // 모든 단어를 가로 방향으로
+                .padding(10)
+                .rotate(() => 0)
                 .font("Impact")
-                .fontSize(d => d.size)
+                .fontSize(d => d.size * 10)
                 .on("end", words => this.draw(containerId, words));
             layout.start();
         },
         draw(containerId, words) {
+            const width = window.innerWidth;
+            const height = 400;
             const svg = d3.select(containerId).append("svg")
-                .attr("width", '100%')
-                .attr("height", 250)
+                .attr("width", width)
+                .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(100,100)");
-
+                .attr("transform", `translate(${width / 2}, ${height / 2})`);
             svg.selectAll("text")
                 .data(words)
                 .enter().append("text")
@@ -70,11 +70,8 @@ export default {
 </script>
 
 <style scoped>
-.word-cloud-container {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+.word-cloud-1,
+.word-cloud-2 {
     width: 100%;
 }
-
 </style>

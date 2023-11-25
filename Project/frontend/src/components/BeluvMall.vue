@@ -15,19 +15,19 @@
             </div>
         </div>
         <div class="row mt-3">
-            <ul class="list-unstyled d-flex flex-wrap text-center">
-                <li v-for="(item, index) in items" :key="index" class="col-4 mb-4" @click="clickCategory(item.text)">
+            <ul class="category list-unstyled d-flex">
+                <li v-for="(item, index) in items" :key="index" class="col-3 mb-4" @click="clickCategory(item.text)">
                     <img :src="item.image" class="img-fluid">
                     <p class="mt-2">{{ item.text }}</p>
                 </li>
             </ul>
         </div>
     </div>
-    <div class="underBar border-top-shadow p-1 pt-2">
-        <ul class="list-unstyled d-flex justify-content-around">
+    <div class="underBar border-top-shadow pt-2 pb-2">
+        <ul class="underBarList list-unstyled d-flex justify-content-around">
             <li v-for="(item, index) in underItems" :key="index" @click="selectItem(index)"
                 :class="{ selected: selectedItemIndex === index }">
-                <img :src="item.image" class="img-fluid">
+                <img :src="item.image">
                 <p class="mt-2">{{ item.text }}</p>
             </li>
         </ul>
@@ -141,26 +141,48 @@ export default {
     padding: 0;
     margin-top: 60px;
     margin-bottom: 80px;
-    overflow-y: scroll;
-    height: calc(100vh - 120px);
 }
 
+.category {
+    display: flex;
+    justify-content: space-between;
+    scrollbar-color: #5BF52F;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.category::-webkit-scrollbar {
+    height: 5px;
+    width: 10%;
+}
+.category::-webkit-scrollbar-thumb {
+    background: #5BF52F; 
+    border-radius: 10px;
+}
+
+
 .underBar {
+    width: 100%;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    font-size: 12px;
     background-color: white;
-    height: 80px;
-    /* 최소 높이 설정 */
+}
+
+.underBarList {
+    margin-bottom: 0;
 }
 
 .underBar li img {
+    width: 25px;
     filter: opacity(0.2) drop-shadow(0 0 0 rgb(221, 221, 221));
 }
 
 .underBar li p {
     color: rgb(221, 221, 221);
+    margin-bottom: 0;
 }
 
 .underBar li.selected img {
@@ -170,6 +192,7 @@ export default {
 .underBar li.selected p {
     color: black;
 }
+
 .border-top-shadow {
     box-shadow: 0px -5px 5px -3px rgba(0, 0, 0, 0.2);
 }

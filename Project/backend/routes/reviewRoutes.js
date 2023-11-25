@@ -3,5 +3,7 @@ const router = express.Router();
 const reviewController = require('../controllers/reviewController')
 
 router.get('/getReviewInfo/:itemId', reviewController.getReviewInfo);
+router.post('/writeReview/:itemId', reviewController.writeReview);
+router.get('/getKeyword/:itemId', reviewController.getKeyword);
 
 module.exports = router;

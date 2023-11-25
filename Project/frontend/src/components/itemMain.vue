@@ -8,12 +8,12 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <img src="../assets/bebeluna_mild_lotion.jpg" class="img-fluid">
+                <img :src="require(`@/assets/photos/bebeluna_mild_lotion.jpg`)" class="img-fluid">
             </div>
         </div>
         <div class="aboutPrice row text-start p-2">
             <div class="brandInfo d-flex justify-content-between">
-                <div class="" style="font-size: 16px; color: rgb(150, 150, 150)">브랜드 > item.Brand</div>
+                <div class="" style="font-size: 16px; color: rgb(150, 150, 150)">브랜드 > {{ item.Brand }}</div>
                 <div class=""><img src="../assets/icons/share.png" width="20px"></div>
             </div>
             <div class="nameInfo">
@@ -47,7 +47,7 @@
             <div class="cont text-start">
                 <div class="free">
                     <span class="contLabel">배송</span>
-                    <span v-if=freeDelivery class="delivery ms-4">무료배송</span> <!-- item.freeDelivery -->
+                    <span v-if=item.FreeShipping class="delivery ms-4">무료배송</span> <!-- item.freeDelivery -->
                     <span v-else class="delivery ms-4">3000원</span>
                 </div>
                 <div class="mileage">
@@ -79,7 +79,7 @@
 
         </div>
         <div v-if="activeTab === 3" class="p-3">
-            <div class="photo d-flex align-items-center">
+            <div class="photo d-flex align-items-center p-3">
                 <span style="font-size:25px; font-weight: bold; margin-right:5px;">{{ Rating }}</span>
                 <svg v-for="i in 5" :key="i" width="22" height="22" viewBox="0 0 30 30">
                     <path :fill="i <= Rating ? 'gold' : '#ccc'"
@@ -88,18 +88,30 @@
             </div>
             <img src="../assets/icons/review.png" class="rounded-circle" @click="goWriteReview">
             <div class="wordCloud mt-5">
-                <WordCloud />
+                <WordCloud :items="ProsCons"/>
             </div>
             <div class="reviews">
-                <div class="review" v-for="review in reviews" :key="review.ReviewID">
-                    <div class="p-3">
-                        {{ review.Rating }}
+                <div class="review p-3" v-for="review in reviews" :key="review.ReviewID">
+                    <div>
+                        <div class="userInfo d-flex align-items-start text-start">
+                            <img class="profile" :src="require('@/assets/icons/user.png')">
+                            <div class="babyInfo">
+                                <div class="userName">유저{{ review.UserID }}</div>
+                                <div class="baby">만 2세 <span>&#183;</span> 민감성 <span>&#183;</span> 여아</div>
+                                <svg v-for="i in 5" :key="i" width="12" height="12" viewBox="0 0 24 24">
+                                    <path :fill="i <= review.Rating ? 'gold' : '#ccc'"
+                                        d="M23.836,8.794a3.179,3.179,0,0,0-3.067-2.226H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832L4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6A3.177,3.177,0,0,0,23.836,8.794Z" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-3">
-                        {{ review.PositiveReviewText }}
+                    <div class="reviewContainer">
+                        <img class="reviewIcon" :src="require('@/assets/icons/good.png')">
+                        <div class="reviewText">{{ review.PositiveReviewText }}</div>
                     </div>
-                    <div class="p-3">
-                        {{ review.NegativeReviewText }}
+                    <div class="reviewContainer">
+                        <img class="reviewIcon" :src="require('@/assets/icons/bad.png')">
+                        <div class="reviewText">{{ review.NegativeReviewText }}</div>
                     </div>
                 </div>
             </div>
@@ -120,12 +132,12 @@ export default {
             Rating: 2,
             reviewCount: 0,
             reviews: [],
-            activeTab: 1,
+            activeTab: 3,
             ProsCons: [],
         };
     },
     mounted() {
-        const getProductInfo = `http://localhost:3000/api/item/getProductInfo/${this.itemId}`;
+        const getProductInfo = `http://192.168.0.213:3000/api/item/getProductInfo/${this.itemId}`;
         axios.get(getProductInfo)
             .then((response) => {
                 this.item = response.data.productInfo;
@@ -135,11 +147,10 @@ export default {
                 console.error('API 요청 중 오류 발생:', error);
             });
 
-        const getReviews = `http://localhost:3000/api/review/getReviewInfo/${this.itemId}`;
+        const getReviews = `http://192.168.0.213:3000/api/review/getReviewInfo/${this.itemId}`;
         axios.get(getReviews)
             .then((response) => {
                 this.review = response.data.reviewInfo;
-                console.log(this.review);
                 this.reviews = this.review.productReviews.slice(0, 5);
                 this.reviewCount = this.review.reviewCount;
                 this.ProsCons = this.review.productProsCons;
@@ -152,6 +163,10 @@ export default {
         goReview() {
             this.$router.push({
                 name: "reviews",
+                query: {
+                    ProductName: this.item.ProductName,
+                    Brand: this.item.Brand
+                }
             });
         },
         updateStarWidth() {
@@ -176,7 +191,13 @@ export default {
             }
         },
         goWriteReview() {
-            this.$router.push("/writeReview")
+            this.$router.push({
+                name: 'writeReview', // 라우트 이름
+                query: {
+                    ProductName: this.item.ProductName,
+                    Brand: this.item.Brand
+                }
+            });
         },
     },
     created() {
@@ -274,5 +295,24 @@ export default {
     position: fixed;
     bottom: 60px;
     right: 30px;
+}
+
+.review {
+    border-bottom: 1px #ccc solid;
+}
+
+.reviewContainer {
+    display: flex;
+    align-items: flex-start;
+}
+
+.reviewIcon {
+    width: 25px;
+    margin-right: 10px;
+}
+
+.reviewText {
+    flex: 1;
+    text-align: start;
 }
 </style>

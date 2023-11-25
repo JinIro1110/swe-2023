@@ -1,3 +1,5 @@
+<!-- 리뷰 등록 시 데이터베이스에 저장, 삭제 시 제거 -> 각각 fastapi(?) or aws 요청 -> 새로운 키워드 추출(저장)-->
+
 <template>
     <div class="headMenu container-fluid text-center p-3">
         <div class="row justify-content-evenly">
@@ -7,18 +9,18 @@
             <div class="col d-flex justify-content-center" style="font-size: 18px; font-weight: bold;">
                 리뷰쓰기
             </div>
-            <div class="col d-flex justify-content-end me-3" style="color: gray;">
+            <div class="col d-flex justify-content-end me-3" style="color: gray;" @click="writeReview">
                 등록
             </div>
         </div>
     </div>
     <div class="box row d-flex align-items-center p-2 text-start">
         <div class="productImg img-fluid col-2 ms-2 ">
-            <img :src="require(`@/assets/photos/${item.image}`)">
+            <img :src="require(`@/assets/photos/skincare/skincare1.png`)">
         </div>
         <div class="itemText col-auto">
-            <div class="itemBrand fw-bold">{{ item.brand }}</div>
-            <div class="itemName fw-bold">{{ item.name }}</div>
+            <div class="itemBrand fw-bold">{{ brand }}</div>
+            <div class="itemName fw-bold">{{ productName }}</div>
         </div>
     </div>
 
@@ -69,32 +71,37 @@
             </div>
         </div>
     </div>
-    <button class="submitButton" v-if="stringLength > 30 && this.selectedRating !== 0">{{ stringLength }}</button>
-    <button class="justsubmitButton" v-else>등록하기</button>
+    <button
+    :class="stringLength >= 30 && selectedRating !== 0 ? 'submitButton' : 'justsubmitButton'"
+    @click="writeReview">
+    {{ stringLength > 30 && selectedRating !== 0 ? stringLength : '등록하기' }}
+</button>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'writeReview',
     data() {
         return {
             selectedRating: 0,
-            item: {
-                id: 1,
-                image: 'skincare/skincare1.png',
-                price: 50000,
-                discount: 20,
-                brand: '브랜드1',
-                name: '브랜드1의 제품1',
-                freeDelivery: true,
-            },
+            userId: 1000,
+            productId: 0,
+            productName: 'dd',
+            brand: 'dd',
             selectedMessage: '-',
             stringLen: 0,
             pros: '',
+            itemId: this.$store.state.itemId,
             cons: '',
             prosPlaceHolder: `제형 / 사용감 / 트러블 유무 / 향 / 가성비 등\n칭찬할 점에 대해 자유롭게 작성해주세요 :)`,
             consPlaceHolder: `제형 / 사용감 / 트러블 유무 / 향 / 가성비 등\n아쉬운 점에 대해 자유롭게 작성해주세요 :)`
         };
+    },
+    created() {
+        this.productName = this.$route.query.ProductName;
+        this.brand = this.$route.query.Brand;
     },
     methods: {
         setRating(rating) {
@@ -104,10 +111,27 @@ export default {
             else if (this.selectedRating == 3) { this.selectedMessage = '보통이에요' }
             else if (this.selectedRating == 4) { this.selectedMessage = '맘에 들어요' }
             else { this.selectedMessage = '최고에요' }
-            // 여기에 Axios를 사용하여 서버에 데이터를 전송하는 로직을 추가할 수 있습니다.
         },
         goBack() {
             this.$router.go(-1);
+        },
+        writeReview() {
+            if(this.stringLength >= 30 && this.selectedRating !== 0) {
+                const getReviews = `http://192.168.0.213:3000/api/review/writeReview/${this.itemId}`;
+                axios.post(getReviews, {
+                    "userId": this.userId,
+                    "prosReview": this.pros,
+                    "consReview": this.cons,
+                    "rating": this.selectedRating,
+                }, {"Content-Type": 'application/json'})
+                    .then((response) => {
+                        alert(response.data.message);
+                        this.$router.push("/item");
+                    })
+                    .catch((error) => {
+                        console.error('API 요청 중 오류 발생:', error.response);
+                    });
+            }
         },
     },
     computed: {
@@ -134,7 +158,6 @@ export default {
 .photo {
     border-bottom: 10px #edebeb solid;
 }
-.itemText {}
 
 .itemBrand {
     color: #5BF52F;

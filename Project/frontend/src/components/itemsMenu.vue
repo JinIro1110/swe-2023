@@ -1,4 +1,5 @@
 <template>
+
     <headMenu :menu="mainCategory" />
     <div class="subCategoryTab container-fluid align-items-center">
         <div class="row">
@@ -7,18 +8,17 @@
                     <ul class="nav nav-pills nav-fill">
                         <li class="nav-item">
                             <div class="nav-link" :class="{ active: activeTab === 0 }"
-                                @click="activeTab = 0">전체</div>
+                                @click="clickEntire">전체</div>
                         </li>
                         <li v-for="(subCategory, index) in subCategories" :key="index" class="nav-item">
                             <div class="nav-link" :class="{ active: activeTab === index + 1 }"
-                                @click="activeTab = index + 1">{{
+                                @click="clickSubCateogry(subCategory, index)">{{
                                     subCategory.SubCategoryName }}</div>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-
     </div>
     <div class="content container-fluid p-3">
         <div class="row">
@@ -26,7 +26,7 @@
                 <div class="lists text-center" @click="clickItem(item.ProductID)">
                     <img :src="require(`@/assets/photos/skincare/skincare1.png`)">
                     <div class="description">
-                        <div class="brand">브랜드</div>
+                        <div class="brand">{{ item.Brand }}</div>
                         <div class="name">{{ item.ProductName }}</div>
                         <div class="info">
                             <span class="discount">{{ item.Discount }}%</span>
@@ -34,7 +34,7 @@
                             <span class="price">{{ changeNum(item.Price) }}원</span>
                         </div>
                         <div class="freeShipping text-start">
-                            <div v-if="item.freeDelivery" class="text-center">무료배송</div>
+                            <div v-if="item.FreeShipping" class="text-center">무료배송</div>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@ export default {
     },
     mounted() {
         const encodedMainCategory = encodeURIComponent(this.mainCategory);
-        const getSubCategoryTab = `http://localhost:3000/api/category/subCategoryNavBar/${encodedMainCategory}`;
+        const getSubCategoryTab = `http://192.168.0.213:3000/api/category/subCategoryNavBar/${encodedMainCategory}`;
         axios.get(getSubCategoryTab)
             .then((response) => {
                 this.subCategories = response.data.subcategories;
@@ -69,10 +69,11 @@ export default {
                 console.error('API 요청 중 오류 발생:', error);
             });
         
-        const getMainCategoryItems = `http://localhost:3000/api/category/showEntireItem/${encodedMainCategory}`;
+        const getMainCategoryItems = `http://192.168.0.213:3000/api/category/showEntireItem/${encodedMainCategory}`;
         axios.get(getMainCategoryItems)
             .then((response) => {
                 this.items = response.data.mainCategoryItems;
+                console.log(this.items);
             })
             .catch((error) => {
                 console.error('API 요청 중 오류 발생:', error);
@@ -96,7 +97,33 @@ export default {
             this.$router.push({
                 name: "itemDescription",
             });
-        }
+        },
+        clickEntire() {
+            this.activeTab = 0;
+            const encodedMainCategory = encodeURIComponent(this.mainCategory);
+            const getMainCategoryItems = `http://192.168.0.213:3000/api/category/showEntireItem/${encodedMainCategory}`;
+            axios.get(getMainCategoryItems)
+                .then((response) => {
+                    this.items = response.data.mainCategoryItems;
+                    console.log(this.items);
+                })
+                .catch((error) => {
+                    console.error('API 요청 중 오류 발생:', error);
+                });
+        },
+        clickSubCateogry(subCategory, index) {
+            const encodedSubCategory = encodeURIComponent(subCategory.SubCategoryName);
+            this.activeTab = index + 1;
+            const getSubCategoryItems = `http://192.168.0.213:3000/api/category/showSubCategoryItem/${encodedSubCategory}`;
+            axios.get(getSubCategoryItems)
+                .then((response) => {
+                    this.items = response.data.subCategoryItems;
+                    console.log(this.items);
+                })
+                .catch((error) => {
+                    console.error('API 요청 중 오류 발생:', error);
+                });
+        },
     },
 }
 </script>
@@ -166,4 +193,18 @@ export default {
 .subCategoryTab {
     margin-top: 60px;
 }
+
+.nav-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.nav-item {
+    flex-shrink: 0;
+}
+.nav-pills::-webkit-scrollbar {
+    display: none; 
+}
+
 </style>
