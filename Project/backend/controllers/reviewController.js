@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const axios = require('axios');
 
 exports.getReviewInfo = (req, res) => {
     const productId = req.params.itemId;
@@ -56,6 +57,8 @@ exports.getReviewInfo = (req, res) => {
     });
 };
 
+const axios = require('axios');
+
 exports.writeReview = (req, res) => {
     const itemId = req.params.itemId;
     const userId = req.body.userId;
@@ -65,15 +68,25 @@ exports.writeReview = (req, res) => {
 
     const insertReviewQuery = `Insert Into ProductReviews (ProductID, UserID, PositiveReviewText, NegativeReviewText, Rating) values (?, ?, ?, ?, ?)`;
 
-    db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], (err, results) => {
+    db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], async (err, results) => {
         if (err) {
             console.error('Error inserting review:', err);
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
+
+
+        try {
+            const fastApiResponse = await axios.get('http://127.0.0.1:8000');
+            console.log('FastAPI Response:', fastApiResponse.data);
+        } catch (error) {
+            console.error('Error calling FastAPI:', error);
+        }
+
         res.status(201).json({ message: '리뷰가 성공적으로 등록되었습니다!' });
     });
-}
+};
+
 
 exports.getKeyword = (req, res) => {
     const productId = req.params.itemId;
@@ -98,5 +111,22 @@ exports.getKeyword = (req, res) => {
                 Cons: consResults
             });
         });
+    });
+};
+
+exports.getConsKeyWordReviews = (req, res) => {
+    const keyWord = req.query.keyWord;
+    const itemId = req.query.itemId;
+    const query = `
+        select * from productReviews Where NegativeReviewText LIKE ? AND ProductID = ?;`;
+
+    db.query(query, [`%${keyWord}%`, itemId], (err, results) => {
+        if (err) {
+            console.error('Error fetching product info by negative keyword:', err);
+            res.status(500).json({ error: 'Error fetching product info by negative keyword' });
+            return;
+        }
+        console.log(results);
+        res.json({ results });
     });
 };

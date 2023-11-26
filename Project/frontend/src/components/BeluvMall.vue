@@ -1,7 +1,7 @@
 <template>
     <div class="topBar row justify-content-between align-items-center p-2">
-        <div class="Logo col d-flex justify-content-start ms-1">Beluv MALL</div>
-        <div class="col d-flex justify-content-end me-1">
+        <div class="Logo col d-flex justify-content-start ms-2">Beluv MALL</div>
+        <div class="col d-flex justify-content-end me-2">
             <img src="../assets/icons/cart.png" alt="" class="iconWidth">
         </div>
     </div>
@@ -117,7 +117,7 @@ export default {
 }
 
 .iconWidth {
-    width: 25px;
+    width: 22px;
 }
 
 .Logo {

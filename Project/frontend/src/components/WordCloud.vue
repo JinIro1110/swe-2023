@@ -10,6 +10,7 @@
 </template>
 
 <script>
+
 import * as d3 from 'd3';
 import cloud from 'd3-cloud';
 
@@ -47,6 +48,7 @@ export default {
             layout.start();
         },
         draw(containerId, words) {
+            d3.select(containerId).select("svg").remove();
             const width = window.innerWidth;
             const height = 400;
             const svg = d3.select(containerId).append("svg")
@@ -62,9 +64,22 @@ export default {
                 .style("fill", containerId === '#word-cloud-1' ? 'DodgerBlue' : 'Red')
                 .attr("text-anchor", "middle")
                 .attr("transform", d => `translate(${[d.x, d.y]})`)
-                .text(d => d.text)
-                .style("border", "1px solid black");
-        }
+                .text(function (d) { return d.text; })
+                .style("border", "1px solid black")
+                .on("click", (event, d) => {
+                    if (containerId === '#word-cloud-1') {
+                        this.$router.push({
+                            name: 'similarItems',
+                            query: { KeyWord: d.text }
+                        });
+                    } else {
+                        this.$router.push({
+                            name: 'negativeReviews',
+                            query: { KeyWord: d.text, itemId: this.$store.state.itemId }
+                        });
+                    }
+                })
+        },
     }
 };
 </script>

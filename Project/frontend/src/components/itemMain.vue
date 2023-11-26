@@ -8,7 +8,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <img :src="require(`@/assets/photos/bebeluna_mild_lotion.jpg`)" class="img-fluid">
+                <img :src="require(`@/assets/photos/items/${itemId}.jpg`)" class="img-fluid">
             </div>
         </div>
         <div class="aboutPrice row text-start p-2">
@@ -47,7 +47,7 @@
             <div class="cont text-start">
                 <div class="free">
                     <span class="contLabel">배송</span>
-                    <span v-if=item.FreeShipping class="delivery ms-4">무료배송</span> <!-- item.freeDelivery -->
+                    <span v-if=item.FreeShipping class="delivery ms-4">무료배송</span>
                     <span v-else class="delivery ms-4">3000원</span>
                 </div>
                 <div class="mileage">
@@ -172,19 +172,13 @@ export default {
         updateStarWidth() {
             for (let i = 1; i <= 5; i++) {
                 const starWidth = this.getStarWidth(i);
-                // 여기에서 어떻게 활용하려는지에 따라 적절한 작업을 수행합니다.
                 console.log(`Star ${i} Width: ${starWidth}`);
             }
         },
         changeNum(value) {
             if (value != null) {
-                // 숫자를 문자열로 변환
                 let valueStr = value.toString();
-
-                // 소수점 이하의 숫자 제거
                 valueStr = valueStr.split('.')[0];
-
-                // 천 단위마다 쉼표 추가
                 return valueStr.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, "$1,");
             } else {
                 return "";
@@ -192,7 +186,7 @@ export default {
         },
         goWriteReview() {
             this.$router.push({
-                name: 'writeReview', // 라우트 이름
+                name: 'writeReview',
                 query: {
                     ProductName: this.item.ProductName,
                     Brand: this.item.Brand
@@ -314,5 +308,12 @@ export default {
 .reviewText {
     flex: 1;
     text-align: start;
+}
+.profile {
+    width: 40px;
+    border-radius: 100%;
+    padding: 5px;
+    background-color: #ccc;
+    margin-right: 10px;
 }
 </style>

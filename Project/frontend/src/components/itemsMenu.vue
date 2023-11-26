@@ -1,5 +1,4 @@
 <template>
-
     <headMenu :menu="mainCategory" />
     <div class="subCategoryTab container-fluid align-items-center">
         <div class="row">
@@ -24,7 +23,7 @@
         <div class="row">
             <div v-for="item in items" :key="item.id" class="col-6 mb-3">
                 <div class="lists text-center" @click="clickItem(item.ProductID)">
-                    <img :src="require(`@/assets/photos/skincare/skincare1.png`)">
+                    <img class="img-fluid" :src="require(`@/assets/photos/items/${item.ProductID}.jpg`)">
                     <div class="description">
                         <div class="brand">{{ item.Brand }}</div>
                         <div class="name">{{ item.ProductName }}</div>

@@ -28,8 +28,8 @@
                 <div class="">
                     <div class="userInfo d-flex align-items-start text-start">
                         <img class="profile" :src="require('@/assets/icons/user.png')">
-                        <div class="babyInfo">
-                            <div class="userName">유저{{ review.UserID }}</div>
+                        <div class="babyInfo mb-2">
+                            <div class="userName">유저 {{ review.UserID }}</div>
                     <div class="baby">만 2세 <span>&#183;</span> 민감성 <span>&#183;</span> 여아</div>
                     <svg v-for="i in 5" :key="i" width="12" height="12" viewBox="0 0 24 24">
                         <path :fill="i <= review.Rating ? 'gold' : '#ccc'"
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="reviewContainer">
+                <div class="reviewContainer mb-2">
                     <img class="reviewIcon" :src="require('@/assets/icons/good.png')"><div class="reviewText">{{ review.PositiveReviewText }}</div>
                 </div>
                 <div class="reviewContainer">
@@ -94,7 +94,7 @@ export default {
         },
         goWriteReview() {
             this.$router.push({
-                name: 'writeReview', // 라우트 이름
+                name: 'writeReview',
                 query: {
                     ProductName: this.$route.query.ProductName,
                     Brand: this.$route.query.Brand
@@ -152,12 +152,16 @@ export default {
 }
 
 .reviewIcon {
-    width: 25px;
+    width: 22px;
     margin-right: 10px;
 }
 
 .reviewText {
     flex: 1;
     text-align: start;
+}
+
+.userName {
+    font-weight: bold;
 }
 </style>

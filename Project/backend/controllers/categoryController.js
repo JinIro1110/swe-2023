@@ -16,7 +16,6 @@ exports.subCategoryNavBar = (req, res) => {
             res.status(500).json({ error: 'Error fetching subcategories' });
             return;
         }
-        // 결과를 클라이언트에 전달
         res.json({ subcategories: results });
     });
 };

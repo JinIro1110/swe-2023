@@ -16,7 +16,7 @@
     </div>
     <div class="box row d-flex align-items-center p-2 text-start">
         <div class="productImg img-fluid col-2 ms-2 ">
-            <img :src="require(`@/assets/photos/skincare/skincare1.png`)">
+            <img :src="require(`@/assets/photos/items/${this.$store.state.itemId}.jpg`)">
         </div>
         <div class="itemText col-auto">
             <div class="itemBrand fw-bold">{{ brand }}</div>
