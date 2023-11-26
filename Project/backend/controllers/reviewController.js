@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const axios = require('axios');
 
 exports.getReviewInfo = (req, res) => {
     const productId = req.params.itemId;
@@ -98,5 +99,22 @@ exports.getKeyword = (req, res) => {
                 Cons: consResults
             });
         });
+    });
+};
+
+exports.getConsKeyWordReviews = (req, res) => {
+    const keyWord = req.query.keyWord;
+    const itemId = req.query.itemId;
+    const query = `
+        select * from productReviews Where NegativeReviewText LIKE ? AND ProductID = ?;`;
+
+    db.query(query, [`%${keyWord}%`, itemId], (err, results) => {
+        if (err) {
+            console.error('Error fetching product info by negative keyword:', err);
+            res.status(500).json({ error: 'Error fetching product info by negative keyword' });
+            return;
+        }
+        console.log(results);
+        res.json({ results });
     });
 };

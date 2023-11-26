@@ -5,6 +5,8 @@ import itemDescription from '../components/itemDescription'
 import review from '../components/reviewPage'
 import wordCloud from '../components/WordCloud'
 import writeReview from '../components/writeReview'
+import similarItems from '../components/similarItems'
+import negativeReviews from '../components/negativeReviews'
 
 const routes = [
     {
@@ -36,6 +38,16 @@ const routes = [
         path: '/writeReview',
         name: 'writeReview',
         component: writeReview,
+    },
+    {
+        path: '/similarItems',
+        name: 'similarItems',
+        component: similarItems
+    },
+    {
+        path: '/negativeReviews',
+        name: 'negativeReviews',
+        component: negativeReviews,
     }
 ]
 

@@ -8,7 +8,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <img :src="require(`@/assets/photos/bebeluna_mild_lotion.jpg`)" class="img-fluid">
+                <img :src="require(`@/assets/photos/items/${itemId}.jpg`)" class="img-fluid">
             </div>
         </div>
         <div class="aboutPrice row text-start p-2">
@@ -178,13 +178,8 @@ export default {
         },
         changeNum(value) {
             if (value != null) {
-                // 숫자를 문자열로 변환
                 let valueStr = value.toString();
-
-                // 소수점 이하의 숫자 제거
                 valueStr = valueStr.split('.')[0];
-
-                // 천 단위마다 쉼표 추가
                 return valueStr.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, "$1,");
             } else {
                 return "";
@@ -314,5 +309,12 @@ export default {
 .reviewText {
     flex: 1;
     text-align: start;
+}
+.profile {
+    width: 40px;
+    border-radius: 100%;
+    padding: 5px;
+    background-color: #ccc;
+    margin-right: 10px;
 }
 </style>

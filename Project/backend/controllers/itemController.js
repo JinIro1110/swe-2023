@@ -95,7 +95,7 @@ exports.getProductsByPositiveKeyword = (req, res) => {
 
 // 부정 키워드를 가진 제품 정보 가져오기
 exports.getProductsByNegativeKeyword = (req, res) => {
-    const keyword = req.params.consKeyword; // 부정 키워드
+    const keyword = req.params.consKeyword;
     const query = `
     SELECT P.*
     FROM Product P
@@ -112,3 +112,24 @@ exports.getProductsByNegativeKeyword = (req, res) => {
         res.json({ products: results });
     });
 };
+
+exports.getSameProsProduct = (req, res) => {
+    const keyword = req.query.keyWord;
+    const itemId = req.query.itemId;
+
+    const query = `
+        SELECT p.* FROM product AS p
+        JOIN productkeywords AS pk ON p.productid = pk.productid
+        WHERE pk.positivekeyword = ? AND p.subcategoryid = (
+            SELECT subCategoryID FROM Product WHERE productID = ?
+        )`;
+
+    db.query(query, [keyword, itemId], (err, results) => {
+        if (err) {
+            res.status(500).send({ message: "Database query error", error: err });
+        } else {
+            res.status(200).send(results);
+        }
+    });
+};
+

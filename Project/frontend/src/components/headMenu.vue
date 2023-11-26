@@ -4,7 +4,7 @@
             <div class="col d-flex justify-content-start" @click="goBack">
                 <img src="../assets/icons/backward.png" class="iconWidth">
             </div>
-            <div class="col d-flex justify-content-center" style="font-size: 18px; font-weight: lighter;">
+            <div class="col d-flex justify-content-center" style="font-size: 18px; font-weight: 400;">
                 {{ menu }}
             </div>
             <div class="col d-flex justify-content-end me-3">
@@ -53,6 +53,6 @@ export default {
 }
 
 .iconWidth {
-    width: 25px;
+    width: 22px;
 }
 </style>
