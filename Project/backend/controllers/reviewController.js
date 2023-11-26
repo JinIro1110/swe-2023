@@ -57,6 +57,8 @@ exports.getReviewInfo = (req, res) => {
     });
 };
 
+const axios = require('axios');
+
 exports.writeReview = (req, res) => {
     const itemId = req.params.itemId;
     const userId = req.body.userId;
@@ -66,15 +68,25 @@ exports.writeReview = (req, res) => {
 
     const insertReviewQuery = `Insert Into ProductReviews (ProductID, UserID, PositiveReviewText, NegativeReviewText, Rating) values (?, ?, ?, ?, ?)`;
 
-    db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], (err, results) => {
+    db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], async (err, results) => {
         if (err) {
             console.error('Error inserting review:', err);
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
+
+
+        try {
+            const fastApiResponse = await axios.get('http://127.0.0.1:8000');
+            console.log('FastAPI Response:', fastApiResponse.data);
+        } catch (error) {
+            console.error('Error calling FastAPI:', error);
+        }
+
         res.status(201).json({ message: '리뷰가 성공적으로 등록되었습니다!' });
     });
-}
+};
+
 
 exports.getKeyword = (req, res) => {
     const productId = req.params.itemId;

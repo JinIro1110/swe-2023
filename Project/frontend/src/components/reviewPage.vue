@@ -94,7 +94,7 @@ export default {
         },
         goWriteReview() {
             this.$router.push({
-                name: 'writeReview', // 라우트 이름
+                name: 'writeReview',
                 query: {
                     ProductName: this.$route.query.ProductName,
                     Brand: this.$route.query.Brand

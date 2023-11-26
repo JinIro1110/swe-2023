@@ -53,7 +53,7 @@ exports.getProductRating = (req, res) => {
 };
 
 exports.getSubCategoryProducts = (req, res) => {
-    const subCategoryName = req.params.subCategoryName; // 클라이언트에서 전달한 서브카테고리 이름
+    const subCategoryName = req.params.subCategoryName;
 
     const query = `
     SELECT P.*, S.SubCategoryName

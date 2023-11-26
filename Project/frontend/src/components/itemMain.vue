@@ -47,7 +47,7 @@
             <div class="cont text-start">
                 <div class="free">
                     <span class="contLabel">배송</span>
-                    <span v-if=item.FreeShipping class="delivery ms-4">무료배송</span> <!-- item.freeDelivery -->
+                    <span v-if=item.FreeShipping class="delivery ms-4">무료배송</span>
                     <span v-else class="delivery ms-4">3000원</span>
                 </div>
                 <div class="mileage">
@@ -172,7 +172,6 @@ export default {
         updateStarWidth() {
             for (let i = 1; i <= 5; i++) {
                 const starWidth = this.getStarWidth(i);
-                // 여기에서 어떻게 활용하려는지에 따라 적절한 작업을 수행합니다.
                 console.log(`Star ${i} Width: ${starWidth}`);
             }
         },
@@ -187,7 +186,7 @@ export default {
         },
         goWriteReview() {
             this.$router.push({
-                name: 'writeReview', // 라우트 이름
+                name: 'writeReview',
                 query: {
                     ProductName: this.item.ProductName,
                     Brand: this.item.Brand
