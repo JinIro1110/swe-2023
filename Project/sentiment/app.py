@@ -4,19 +4,86 @@ from dotenv import load_dotenv
 from preprocessing import preprocess_text
 from rds_mysql import RDSConnector
 from keyword_extraction import KeywordExtractor
+import json
+import mysql.connector
 
-def test(text, positive_reviews, negative_reviews):
-    preprocessd_text = preprocess_text(text)
-    preprocessd_texts = [sentence.text for sentence in preprocessd_text]
+class SentimentAnalysisManager:
+    def __init__(self):
+        self.sentiment_analyzer = BERTSentimentAnalyzer()
+        self.keyword_extractor = KeywordExtractor()
+        self.keyword_dictionary = 'keyword_test.txt'
+        self.user_dictionary = 'user_dictionary.txt'
+        self.positive_keywords_dict = {}
+        self.negative_keywords_dict = {}
 
-    for processed_text in preprocessd_texts:
-        sentiment = sentiment_analyzer.perform_sentiment_analysis(processed_text)
-        if sentiment == '긍정':
-            positive_reviews += (processed_text + "\n")
-        elif sentiment == '부정':
-            negative_reviews += (processed_text + "\n")
-    return positive_reviews, negative_reviews
-    
+    def sentiment_reanalysis(self, positive_text, negative_text):
+        positive_processed_text = preprocess_text(positive_text)
+        positive_preprocessed_texts = [sentence.text for sentence in positive_processed_text]
+
+        positive_reviews = []
+        negative_reviews = []
+
+        for processed_text in positive_preprocessed_texts:
+            sentiment = self.sentiment_analyzer.perform_sentiment_analysis(processed_text)
+            if sentiment == 2:
+                positive_reviews.append(processed_text + ".\n")
+            elif sentiment == 0:
+                negative_reviews.append(processed_text + ".\n")
+
+        negative_processed_text = preprocess_text(negative_text)
+        negative_preprocessed_texts = [sentence.text for sentence in negative_processed_text]
+
+        for processed_text in negative_preprocessed_texts:
+            sentiment = self.sentiment_analyzer.perform_sentiment_analysis(processed_text)
+            if sentiment == 2:
+                positive_reviews.append(processed_text + ".\n")
+            elif sentiment == 0:
+                negative_reviews.append(processed_text + ".\n")
+
+        return positive_reviews, negative_reviews
+
+    def process_reviews(self, reviews):
+        for row in reviews:
+            if isinstance(row, tuple):
+                review_id = row[0]
+                product_id = row[1]
+                user_id = row[2]
+                positive_text = row[3]
+                negative_text = row[4]
+
+                positive_reviews, negative_reviews = self.sentiment_reanalysis(positive_text, negative_text)
+
+                positive_text_combined = " ".join(positive_reviews)
+                keywords = self.keyword_extractor.process_text(
+                    positive_text_combined,
+                    user_dictionary_file=self.user_dictionary,
+                    keyword_dictionary_file=self.keyword_dictionary
+                )
+                for keyword, _ in keywords:
+                    self.positive_keywords_dict[keyword] = self.positive_keywords_dict.get(keyword, 0) + 1
+
+                negative_text_combined = " ".join(negative_reviews)
+                keywords = self.keyword_extractor.process_text(
+                    negative_text_combined,
+                    user_dictionary_file=self.user_dictionary,
+                    keyword_dictionary_file=self.keyword_dictionary
+                )
+                for keyword, _ in keywords:
+                    self.negative_keywords_dict[keyword] = self.negative_keywords_dict.get(keyword, 0) + 1
+        # 결과 정렬
+        positive_keywords_result = [{"keyword": keyword, "score": count} for keyword, count in self.positive_keywords_dict.items()]
+        negative_keywords_result = [{"keyword": keyword, "score": count} for keyword, count in self.negative_keywords_dict.items()]
+
+        # 정렬
+        positive_keywords_result = sorted(positive_keywords_result, key=lambda x: x["score"], reverse=True)
+        negative_keywords_result = sorted(negative_keywords_result, key=lambda x: x["score"], reverse=True)
+
+        output_data = {
+            "positiveKeywords": positive_keywords_result[:5],
+            "negativeKeywords": negative_keywords_result[:5]
+        }
+        return output_data
+
 if __name__ == "__main__":
     load_dotenv()
     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
@@ -30,36 +97,33 @@ if __name__ == "__main__":
 
     connection = rds_connector.connect_to_mysql()
 
-    sql_query = 'select * from ProductReviews where ProductID = 5;'
-    result = rds_connector.execute_query(connection, sql_query)
+    sentiment_manager = SentimentAnalysisManager()
+    cursor = connection.cursor()
+    for i in range(1, 10):
+        sql_query = f'select * from ProductReviews where productid = {i};'
+        result = rds_connector.execute_query(connection, sql_query)
 
-    sentiment_analyzer = BERTSentimentAnalyzer()
+        json_result = sentiment_manager.process_reviews(result)
 
-    positive_reviews = ""
-    negative_reviews = ""
+        # 상위 5개 키워드만 가져오도록 수정
+        for j in range(5):
+            positive_keyword_info = json_result['positiveKeywords'][j] if j < len(json_result['positiveKeywords']) else None
+            negative_keyword_info = json_result['negativeKeywords'][j] if j < len(json_result['negativeKeywords']) else None
 
-    for row in result:
-        if isinstance(row, tuple):
-            product_id = row[1]
-            positive_text = row[3]
-            negative_text = row[4]
-            positive_reviews, negative_reviews = test(positive_text + negative_text, positive_reviews, negative_reviews)
+            positive_keyword = positive_keyword_info["keyword"] if positive_keyword_info else None
+            positive_score = positive_keyword_info["score"] if positive_keyword_info else None
 
+            negative_keyword = negative_keyword_info["keyword"] if negative_keyword_info else None
+            negative_score = negative_keyword_info["score"] if negative_keyword_info else None
 
-    stopwords_file = 'stopwords.txt'
-    user_dictionary_file = 'user_dictionary.txt'
-    keyword_dictionary_file = 'keyword_dictionary.txt'
-    
-    extractor = KeywordExtractor()
-    positive_result = extractor.process_text(positive_reviews, stopwords_file = stopwords_file, user_dictionary_file=user_dictionary_file, keyword_dictionary_file=keyword_dictionary_file)
-    negative_result = extractor.process_text(negative_reviews, stopwords_file = stopwords_file, user_dictionary_file=user_dictionary_file, keyword_dictionary_file=keyword_dictionary_file)
-        
-    print("긍정 키워드 및 빈도 수:")
-    for keyword, frequency in positive_result:
-        print(f"{keyword}: {frequency}회")
+            query = """
+                INSERT INTO ProductKeywords (ProductID, PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            values = (i, positive_keyword, positive_score, negative_keyword, negative_score)
+            cursor.execute(query, values)
 
-    print("부정 키워드 및 빈도 수:")
-    for keyword, frequency in negative_result:
-        print(f"{keyword}: {frequency}회")    
+    connection.commit()
+    cursor.close()
+    print("Results inserted into the database.")
 
-    rds_connector.close_connection(connection)

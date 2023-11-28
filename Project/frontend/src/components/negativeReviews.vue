@@ -45,7 +45,7 @@ export default {
         this.consKeyWord = this.$route.query.KeyWord;
     },
     mounted() {
-        const getConsKeyWordReviews = `http://192.168.0.213:3000/api/review/getConsKeyWordReviews/`;
+        const getConsKeyWordReviews = `http://${this.$store.state.port}:3000/api/review/getConsKeyWordReviews/`;
             axios.get(getConsKeyWordReviews, {
                 params: {
                     "itemId": this.$store.state.itemId,

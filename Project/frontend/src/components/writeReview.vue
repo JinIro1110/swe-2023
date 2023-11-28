@@ -117,7 +117,7 @@ export default {
         },
         writeReview() {
             if(this.stringLength >= 30 && this.selectedRating !== 0) {
-                const getReviews = `http://192.168.0.213:3000/api/review/writeReview/${this.itemId}`;
+                const getReviews = `http://${this.$store.state.port}:3000/api/review/writeReview/${this.itemId}`;
                 axios.post(getReviews, {
                     "userId": this.userId,
                     "prosReview": this.pros,

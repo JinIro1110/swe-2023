@@ -67,7 +67,7 @@ export default {
         };
     },
     mounted() {
-        const getProductRating = `http://192.168.0.213:3000/api/item/getProductRating/${this.itemId}`;
+        const getProductRating = `http://${this.$store.state.port}:3000/api/item/getProductRating/${this.itemId}`;
         axios.get(getProductRating)
             .then((response) => {
                 this.rating = response.data.rating;
@@ -76,13 +76,14 @@ export default {
                 console.error('API 요청 중 오류 발생:', error);
             });
 
-        const getReviews = `http://192.168.0.213:3000/api/review/getReviewInfo/${this.itemId}`;
+        const getReviews = `http://${this.$store.state.port}:3000/api/review/getReviewInfo/${this.itemId}`;
         axios.get(getReviews)
             .then((response) => {
                 this.review = response.data.reviewInfo;
                 this.reviews = this.review.productReviews;
                 this.reviewCount = this.review.reviewCount;
                 this.ProsCons = this.review.productProsCons;
+                console.log(this.ProsCons);
             })
             .catch((error) => {
                 console.error('API 요청 중 오류 발생:', error);

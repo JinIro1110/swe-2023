@@ -64,11 +64,16 @@ class BERTSentimentAnalyzer(nn.Module):
         probabilities = torch.softmax(output, dim=1)
         predicted_class = torch.argmax(probabilities, dim=1).item()
 
-        class_names = ['부정', '중립', '긍정']
+        #class_names = ['부정', '중립', '긍정']
 
-        for i, class_name in enumerate(class_names):
-            class_prob = probabilities[0][i].item()
+        # for i, class_name in enumerate(class_names):
+        #     class_prob = probabilities[0][i].item()
 
-        return class_names[predicted_class]
+        return predicted_class
     
-    
+
+test = '그래도 배송은 포장 깔끔하고 예쁘게 그리고 빠르게 왔어요. 잘 쓰겠습니다'
+
+ex = BERTSentimentAnalyzer()
+
+print(ex.perform_sentiment_analysis(test))

@@ -8,6 +8,7 @@ const store = new createStore({
             itemId: null,
             prosKeyword: null,
             consKeyword: null,
+            port: '192.168.0.32',
         };
     },
     mutations: {

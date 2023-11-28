@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../config/rds')
 
 // 아이템 클릭 시 아이템들에 대한 정보 가져오기
 exports.getProductInfo = (req, res) => {
@@ -116,15 +116,17 @@ exports.getProductsByNegativeKeyword = (req, res) => {
 exports.getSameProsProduct = (req, res) => {
     const keyword = req.query.keyWord;
     const itemId = req.query.itemId;
+    console.log(keyword);
+    console.log(itemId);
 
     const query = `
-        SELECT p.* FROM product AS p
-        JOIN productkeywords AS pk ON p.productid = pk.productid
+        SELECT p.* FROM Product AS p
+        JOIN ProductKeywords AS pk ON p.productid = pk.productid
         WHERE pk.positivekeyword = ? AND p.subcategoryid = (
             SELECT subCategoryID FROM Product WHERE productID = ?
-        )`;
+        ) AND p.productID != ?`;
 
-    db.query(query, [keyword, itemId], (err, results) => {
+    db.query(query, [keyword, itemId, itemId], (err, results) => {
         if (err) {
             res.status(500).send({ message: "Database query error", error: err });
         } else {
@@ -132,4 +134,3 @@ exports.getSameProsProduct = (req, res) => {
         }
     });
 };
-
