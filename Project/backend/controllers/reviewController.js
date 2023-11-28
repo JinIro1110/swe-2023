@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../config/rds')
 const axios = require('axios');
 
 exports.getReviewInfo = (req, res) => {
@@ -57,8 +57,6 @@ exports.getReviewInfo = (req, res) => {
     });
 };
 
-const axios = require('axios');
-
 exports.writeReview = (req, res) => {
     const itemId = req.params.itemId;
     const userId = req.body.userId;
@@ -74,7 +72,6 @@ exports.writeReview = (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
-
 
         try {
             const fastApiResponse = await axios.get('http://127.0.0.1:8000');
@@ -118,7 +115,7 @@ exports.getConsKeyWordReviews = (req, res) => {
     const keyWord = req.query.keyWord;
     const itemId = req.query.itemId;
     const query = `
-        select * from productReviews Where NegativeReviewText LIKE ? AND ProductID = ?;`;
+        select * from ProductReviews Where NegativeReviewText LIKE ? AND ProductID = ?;`;
 
     db.query(query, [`%${keyWord}%`, itemId], (err, results) => {
         if (err) {

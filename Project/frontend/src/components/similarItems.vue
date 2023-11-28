@@ -38,7 +38,7 @@ export default {
         };
     },
     mounted() {
-        const getSameProsProduct = `http://192.168.0.213:3000/api/item/getSameProsProduct`;
+        const getSameProsProduct = `http://${this.$store.state.port}:3000/api/item/getSameProsProduct`;
         axios.get(getSameProsProduct, {
             params: {
                 "itemId": this.$store.state.itemId,

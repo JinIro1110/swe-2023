@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../config/rds')
 
 // 서브 카테고리 네비바 생성
 exports.subCategoryNavBar = (req, res) => {

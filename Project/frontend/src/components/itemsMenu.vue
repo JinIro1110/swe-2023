@@ -59,7 +59,7 @@ export default {
     },
     mounted() {
         const encodedMainCategory = encodeURIComponent(this.mainCategory);
-        const getSubCategoryTab = `http://192.168.0.213:3000/api/category/subCategoryNavBar/${encodedMainCategory}`;
+        const getSubCategoryTab = `http://${this.$store.state.port}:3000/api/category/subCategoryNavBar/${encodedMainCategory}`;
         axios.get(getSubCategoryTab)
             .then((response) => {
                 this.subCategories = response.data.subcategories;
@@ -68,7 +68,7 @@ export default {
                 console.error('API 요청 중 오류 발생:', error);
             });
         
-        const getMainCategoryItems = `http://192.168.0.213:3000/api/category/showEntireItem/${encodedMainCategory}`;
+        const getMainCategoryItems = `http://${this.$store.state.port}:3000/api/category/showEntireItem/${encodedMainCategory}`;
         axios.get(getMainCategoryItems)
             .then((response) => {
                 this.items = response.data.mainCategoryItems;
@@ -100,7 +100,7 @@ export default {
         clickEntire() {
             this.activeTab = 0;
             const encodedMainCategory = encodeURIComponent(this.mainCategory);
-            const getMainCategoryItems = `http://192.168.0.213:3000/api/category/showEntireItem/${encodedMainCategory}`;
+            const getMainCategoryItems = `http://${this.$store.state.port}:3000/api/category/showEntireItem/${encodedMainCategory}`;
             axios.get(getMainCategoryItems)
                 .then((response) => {
                     this.items = response.data.mainCategoryItems;
@@ -113,7 +113,7 @@ export default {
         clickSubCateogry(subCategory, index) {
             const encodedSubCategory = encodeURIComponent(subCategory.SubCategoryName);
             this.activeTab = index + 1;
-            const getSubCategoryItems = `http://192.168.0.213:3000/api/category/showSubCategoryItem/${encodedSubCategory}`;
+            const getSubCategoryItems = `http://${this.$store.state.port}:3000/api/category/showSubCategoryItem/${encodedSubCategory}`;
             axios.get(getSubCategoryItems)
                 .then((response) => {
                     this.items = response.data.subCategoryItems;

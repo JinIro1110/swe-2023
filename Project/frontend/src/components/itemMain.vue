@@ -137,7 +137,7 @@ export default {
         };
     },
     mounted() {
-        const getProductInfo = `http://192.168.0.213:3000/api/item/getProductInfo/${this.itemId}`;
+        const getProductInfo = `http://${this.$store.state.port}:3000/api/item/getProductInfo/${this.itemId}`;
         axios.get(getProductInfo)
             .then((response) => {
                 this.item = response.data.productInfo;
@@ -147,7 +147,7 @@ export default {
                 console.error('API 요청 중 오류 발생:', error);
             });
 
-        const getReviews = `http://192.168.0.213:3000/api/review/getReviewInfo/${this.itemId}`;
+        const getReviews = `http://${this.$store.state.port}:3000/api/review/getReviewInfo/${this.itemId}`;
         axios.get(getReviews)
             .then((response) => {
                 this.review = response.data.reviewInfo;
