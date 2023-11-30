@@ -31,8 +31,8 @@ export default {
     },
     methods: {
         createWordClouds() {
-            this.createWordCloud('#word-cloud-1', this.items.map(item => ({ text: item.PositiveKeyword, size: item.PositiveRating / 2 })));
-            this.createWordCloud('#word-cloud-2', this.items.map(item => ({ text: item.NegativeKeyword, size: item.NegativeRating / 2 })));
+            this.createWordCloud('#word-cloud-1', this.items.map(item => ({ text: item.PositiveKeyword, size: item.PositiveRating })));
+            this.createWordCloud('#word-cloud-2', this.items.map(item => ({ text: item.NegativeKeyword, size: item.NegativeRating })));
         },
         createWordCloud(containerId, words) {
             const width = window.innerWidth;

@@ -57,32 +57,74 @@ exports.getReviewInfo = (req, res) => {
     });
 };
 
-exports.writeReview = (req, res) => {
+exports.writeReview = async (req, res) => {
     const itemId = req.params.itemId;
     const userId = req.body.userId;
     const prosReview = req.body.prosReview;
     const consReview = req.body.consReview;
     const rating = req.body.rating;
 
-    const insertReviewQuery = `Insert Into ProductReviews (ProductID, UserID, PositiveReviewText, NegativeReviewText, Rating) values (?, ?, ?, ?, ?)`;
+    const insertReviewQuery = `
+        INSERT INTO ProductReviews (ProductID, UserID, PositiveReviewText, NegativeReviewText, Rating)
+        VALUES (?, ?, ?, ?, ?)
+    `;
 
-    db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], async (err, results) => {
-        if (err) {
-            console.error('Error inserting review:', err);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
+    try {
+        // Assuming you have a 'db' connection configured somewhere in your code
+        db.query(insertReviewQuery, [itemId, userId, prosReview, consReview, rating], async (err, results) => {
+            if (err) {
+                console.error('Error:', err);
+                res.status(500).json({ error: 'Internal server error' });
+            } else {
+                // Check if the insertion was successful
+                if (results.affectedRows > 0) {
+                    // Respond to the original client request immediately
+                    res.status(201).json({ message: '리뷰가 성공적으로 등록되었습니다!' });
 
-        try {
-            const fastApiResponse = await axios.get('http://127.0.0.1:8000');
-            console.log('FastAPI Response:', fastApiResponse.data);
-        } catch (error) {
-            console.error('Error calling FastAPI:', error);
-        }
+                    // Fetch positive and negative keywords from the FastAPI endpoint
+                    try {
+                        const fastApiResponse = await axios.post(`http://0.0.0.0:1004/getJson/${itemId}`);
+                        const { positiveKeywords, negativeKeywords } = fastApiResponse.data;
 
-        res.status(201).json({ message: '리뷰가 성공적으로 등록되었습니다!' });
-    });
+                        // Delete existing keywords for the given itemId
+                        const deleteKeywordsQuery = `
+                            DELETE FROM ProductKeywords
+                            WHERE ProductID = ?
+                        `;
+
+                        db.query(deleteKeywordsQuery, [itemId], async (deleteErr, deleteResults) => {
+                            if (deleteErr) {
+                                console.error('Error deleting existing keywords:', deleteErr);
+                                // Handle the error, you might want to log it or take other actions
+                            } else {
+                                // Insert positive and negative keywords into ProductKeywords table using a for loop
+                                const insertKeywordQuery = `
+                                    INSERT INTO ProductKeywords (ProductID, PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating)
+                                    VALUES (?, ?, ?, ?, ?)
+                                `;
+
+                                for (let i = 0; i < positiveKeywords.length; i++) {
+                                    const posKeyword = positiveKeywords[i];
+                                    const negKeyword = negativeKeywords[i];
+                                    db.query(insertKeywordQuery, [itemId, posKeyword.keyword, posKeyword.score, negKeyword.keyword, negKeyword.score]);
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error making FastAPI request:', error.message);
+                        // Handle the error, you might want to log it or take other actions
+                    }
+                } else {
+                    res.status(500).json({ error: '리뷰를 등록하는 중에 오류가 발생했습니다.' });
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
+
 
 
 exports.getKeyword = (req, res) => {

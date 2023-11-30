@@ -5,14 +5,15 @@ from preprocessing import preprocess_text
 from rds_mysql import RDSConnector
 from keyword_extraction import KeywordExtractor
 import json
+import sys
 import mysql.connector
 
 class SentimentAnalysisManager:
     def __init__(self):
         self.sentiment_analyzer = BERTSentimentAnalyzer()
         self.keyword_extractor = KeywordExtractor()
-        self.keyword_dictionary = 'keyword_test.txt'
-        self.user_dictionary = 'user_dictionary.txt'
+        self.keyword_dictionary = 'C:/Users/user/Desktop/swe-pknu/swe-2023/Project/keyword_test.txt'
+        self.user_dictionary = 'C:/Users/user/Desktop/swe-pknu/swe-2023/Project/user_dictionary.txt'
         self.positive_keywords_dict = {}
         self.negative_keywords_dict = {}
 
@@ -82,9 +83,60 @@ class SentimentAnalysisManager:
             "positiveKeywords": positive_keywords_result[:5],
             "negativeKeywords": negative_keywords_result[:5]
         }
+        self.positive_keywords_dict = {}
+        self.negative_keywords_dict = {}
         return output_data
 
-if __name__ == "__main__":
+
+# if __name__ == "__main__":
+#     load_dotenv()
+#     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+#     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+#     region_name = 'ap-northeast-2'
+
+#     db_instance_identifier = 'swe-database'
+#     database_name = 'beluv'
+
+#     rds_connector = RDSConnector(aws_access_key_id, aws_secret_access_key, region_name, db_instance_identifier, database_name)
+
+#     connection = rds_connector.connect_to_mysql()
+
+#     sentiment_manager = SentimentAnalysisManager()
+#     cursor = connection.cursor()
+#     for i in range(5, 8):
+#         sql_query = f'select * from ProductReviews where productid = {i};'
+#         result = rds_connector.execute_query(connection, sql_query)
+
+#         json_result = sentiment_manager.process_reviews(result)
+
+#         # 상위 5개 키워드만 가져오도록 수정
+#         for j in range(5):
+#             positive_keyword_info = json_result['positiveKeywords'][j] if j < len(json_result['positiveKeywords']) else None
+#             negative_keyword_info = json_result['negativeKeywords'][j] if j < len(json_result['negativeKeywords']) else None
+
+#             positive_keyword = positive_keyword_info["keyword"] if positive_keyword_info else None
+#             positive_score = positive_keyword_info["score"] if positive_keyword_info else None
+
+#             negative_keyword = negative_keyword_info["keyword"] if negative_keyword_info else None
+#             negative_score = negative_keyword_info["score"] if negative_keyword_info else None
+
+#             query = """
+#                 INSERT INTO ProductKeywords (ProductID, PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating)
+#                 VALUES (%s, %s, %s, %s, %s)
+#             """
+#             values = (i, positive_keyword, positive_score, negative_keyword, negative_score)
+#             cursor.execute(query, values)
+
+#     connection.commit()
+#     cursor.close()
+#     print("Results inserted into the database.")
+
+def save_json_result(json_result, file_path):
+    with open(file_path, 'w', encoding='utf-8') as json_file:
+        json.dump(json_result, json_file, indent=2, ensure_ascii=False)
+
+def get_and_save_json(itemId):
+    print('start getJson')
     load_dotenv()
     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -98,32 +150,18 @@ if __name__ == "__main__":
     connection = rds_connector.connect_to_mysql()
 
     sentiment_manager = SentimentAnalysisManager()
-    cursor = connection.cursor()
-    for i in range(1, 10):
-        sql_query = f'select * from ProductReviews where productid = {i};'
-        result = rds_connector.execute_query(connection, sql_query)
 
-        json_result = sentiment_manager.process_reviews(result)
+    sql_query = f'select * from ProductReviews where productid = {itemId} LIMIT 5;'
+    result = rds_connector.execute_query(connection, sql_query)
 
-        # 상위 5개 키워드만 가져오도록 수정
-        for j in range(5):
-            positive_keyword_info = json_result['positiveKeywords'][j] if j < len(json_result['positiveKeywords']) else None
-            negative_keyword_info = json_result['negativeKeywords'][j] if j < len(json_result['negativeKeywords']) else None
+    json_result = sentiment_manager.process_reviews(result)
+    rds_connector.close_connection(connection)
 
-            positive_keyword = positive_keyword_info["keyword"] if positive_keyword_info else None
-            positive_score = positive_keyword_info["score"] if positive_keyword_info else None
+    json_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../api/result.json'))
+    save_json_result(json_result, json_file_path)
+    print('json created and saved at:', json_file_path)
+    return json_result
 
-            negative_keyword = negative_keyword_info["keyword"] if negative_keyword_info else None
-            negative_score = negative_keyword_info["score"] if negative_keyword_info else None
 
-            query = """
-                INSERT INTO ProductKeywords (ProductID, PositiveKeyword, PositiveRating, NegativeKeyword, NegativeRating)
-                VALUES (%s, %s, %s, %s, %s)
-            """
-            values = (i, positive_keyword, positive_score, negative_keyword, negative_score)
-            cursor.execute(query, values)
-
-    connection.commit()
-    cursor.close()
-    print("Results inserted into the database.")
-
+if __name__== '__main__':
+    get_and_save_json(sys.argv[1])
