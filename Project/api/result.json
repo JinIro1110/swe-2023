@@ -1,0 +1,38 @@
+{
+  "positiveKeywords": [
+    {
+      "keyword": "포장",
+      "score": 2
+    },
+    {
+      "keyword": "저렴",
+      "score": 2
+    },
+    {
+      "keyword": "가격",
+      "score": 2
+    },
+    {
+      "keyword": "양",
+      "score": 2
+    },
+    {
+      "keyword": "비싸",
+      "score": 1
+    }
+  ],
+  "negativeKeywords": [
+    {
+      "keyword": "포장",
+      "score": 2
+    },
+    {
+      "keyword": "구성",
+      "score": 1
+    },
+    {
+      "keyword": "가격",
+      "score": 1
+    }
+  ]
+}

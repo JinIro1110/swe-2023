@@ -72,8 +72,8 @@ class BERTSentimentAnalyzer(nn.Module):
         return predicted_class
     
 
-test = '그래도 배송은 포장 깔끔하고 예쁘게 그리고 빠르게 왔어요. 잘 쓰겠습니다'
+# test = '발림성 좋고, 여름내내 빨간뚜껑인 로션제품 쓰다가 이제 곧 가을로 넘어가니 좀 더 보습되는 크림타입으로 다시 돌아왔습니다'
 
-ex = BERTSentimentAnalyzer()
+# ex = BERTSentimentAnalyzer()
 
-print(ex.perform_sentiment_analysis(test))
+# print(ex.perform_sentiment_analysis(test))
